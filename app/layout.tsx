@@ -28,7 +28,10 @@ export default async function RootLayout({
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
+  const isAuthPage =
+    typeof window !== "undefined" &&
+    window.location.pathname.startsWith("/auth");
+  if (isAuthPage && (error || !data?.user)) {
     redirect("/auth/login");
   }
 
