@@ -100,7 +100,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           name: string;
-          user_id: string;
+          user_id?: string;
         };
         Update: {
           category_id?: number;
@@ -125,6 +125,7 @@ export type Database = {
           id: number;
           name: string;
           sequence_id: number;
+          start_fen: string | null;
           updated_at: string;
         };
         Insert: {
@@ -132,13 +133,15 @@ export type Database = {
           id?: number;
           name: string;
           sequence_id: number;
-          updated_at: string;
+          start_fen?: string | null;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
           id?: number;
           name?: string;
           sequence_id?: number;
+          start_fen?: string | null;
           updated_at?: string;
         };
         Relationships: [
