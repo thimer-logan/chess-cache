@@ -2,8 +2,8 @@ import { CollectionWithSequences } from "@/lib/types/database.types";
 import { CollectionsAccordian } from "@/components/collections-accordian";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
-import NewCollectionDialog from "@/app/new-collection-dialog";
-
+import NewCollectionDialog from "@/app/(home)/new-collection-dialog";
+import { createSequence } from "@/app/(home)/actions";
 interface CollectionsCardProps {
   collections: CollectionWithSequences[];
   className?: string;
@@ -20,7 +20,10 @@ export default function CollectionsCard({
         <NewCollectionDialog />
       </CardHeader>
       <CardContent>
-        <CollectionsAccordian collections={collections} />
+        <CollectionsAccordian
+          collections={collections}
+          createSequenceAction={createSequence}
+        />
       </CardContent>
     </Card>
   );

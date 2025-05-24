@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CollectionWithSequences } from "@/lib/types/database.types";
+import { CollectionWithSequences, Sequence } from "@/lib/types/database.types";
 import {
   Accordion,
   AccordionContent,
@@ -11,16 +11,20 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Plus, X } from "lucide-react";
-import { createSequence } from "@/app/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 interface CollectionsAccordianProps {
   collections: CollectionWithSequences[];
+  createSequenceAction: (sequence: {
+    name: string;
+    collection_id: number;
+  }) => Promise<Sequence>;
 }
 
 export function CollectionsAccordian({
   collections,
+  createSequenceAction,
 }: CollectionsAccordianProps) {
   const [isAddingSequence, setIsAddingSequence] = useState<string | null>(null);
   const [newSequenceName, setNewSequenceName] = useState("");
@@ -32,7 +36,7 @@ export function CollectionsAccordian({
 
     try {
       setIsPending(true);
-      await createSequence({
+      await createSequenceAction({
         name: newSequenceName.trim(),
         collection_id: collectionId,
       });

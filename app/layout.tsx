@@ -1,10 +1,8 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/server";
-import SiteHeader from "@/components/site-header";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
-import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,16 +23,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  const isAuthPage =
-    typeof window !== "undefined" &&
-    window.location.pathname.startsWith("/auth");
-  if (isAuthPage && (error || !data?.user)) {
-    redirect("/auth/login");
-  }
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -44,10 +32,7 @@ export default async function RootLayout({
           geistMono.variable
         )}
       >
-        <SiteHeader />
-        <main className="mx-auto my-0 p-6 max-w-screen-lg">
-          <div className="flex flex-1">{children}</div>
-        </main>
+        {children}
         <Toaster />
       </body>
     </html>
