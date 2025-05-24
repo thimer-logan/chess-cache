@@ -14,9 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { createCategory } from "./actions";
+import { createCollection } from "./actions";
 
-export default function NewCategoryDialog() {
+export default function NewCollectionDialog() {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -29,7 +29,7 @@ export default function NewCategoryDialog() {
 
     setIsLoading(true);
     try {
-      await createCategory({
+      await createCollection({
         name: name.trim(),
       });
 
@@ -65,7 +65,7 @@ export default function NewCategoryDialog() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="col-span-3"
-            placeholder="Enter category name"
+            placeholder="Enter collection name"
             disabled={isLoading}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !isLoading) {

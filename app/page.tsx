@@ -1,8 +1,8 @@
-import { getCategoriesWithSequences } from "@/lib/api/categories";
-import CategoriesCard from "@/components/categories-card";
+import { getCollectionsWithSequences } from "@/lib/api/collections";
+import CollectionsCard from "@/components/collections-card";
 
 export default async function HomePage() {
-  const categories = await getCategoriesWithSequences();
+  const collections = await getCollectionsWithSequences();
 
-  return <CategoriesCard categories={categories} />;
+  return <CollectionsCard collections={collections} />;
 }

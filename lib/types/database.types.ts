@@ -34,7 +34,7 @@ export type Database = {
   };
   public: {
     Tables: {
-      categories: {
+      collections: {
         Row: {
           created_at: string;
           id: number;
@@ -89,21 +89,21 @@ export type Database = {
       };
       sequences: {
         Row: {
-          category_id: number;
+          collection_id: number;
           created_at: string;
           id: number;
           name: string;
           user_id: string;
         };
         Insert: {
-          category_id: number;
+          collection_id: number;
           created_at?: string;
           id?: number;
           name: string;
           user_id?: string;
         };
         Update: {
-          category_id?: number;
+          collection_id?: number;
           created_at?: string;
           id?: number;
           name?: string;
@@ -111,10 +111,10 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "sequences_category_id_fkey";
-            columns: ["category_id"];
+            foreignKeyName: "sequences_collection_id_fkey";
+            columns: ["collection_id"];
             isOneToOne: false;
-            referencedRelation: "categories";
+            referencedRelation: "collections";
             referencedColumns: ["id"];
           }
         ];
@@ -124,6 +124,7 @@ export type Database = {
           created_at: string;
           id: number;
           name: string;
+          orientation: Database["public"]["Enums"]["Orientation"];
           sequence_id: number;
           start_fen: string | null;
           updated_at: string;
@@ -132,6 +133,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           name: string;
+          orientation?: Database["public"]["Enums"]["Orientation"];
           sequence_id: number;
           start_fen?: string | null;
           updated_at?: string;
@@ -140,6 +142,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           name?: string;
+          orientation?: Database["public"]["Enums"]["Orientation"];
           sequence_id?: number;
           start_fen?: string | null;
           updated_at?: string;
@@ -162,7 +165,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      Orientation: "white" | "black";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -280,16 +283,19 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      Orientation: ["white", "black"],
+    },
   },
 } as const;
 
-export type Category = Tables<"categories">;
+export type Collection = Tables<"collections">;
 export type Sequence = Tables<"sequences">;
 export type Variation = Tables<"variations">;
 export type Move = Tables<"moves">;
+export type Orientation = Enums<"Orientation">;
 
-export type CategoryWithSequences = Category & {
+export type CollectionWithSequences = Collection & {
   sequences: Sequence[];
 };
 

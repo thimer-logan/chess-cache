@@ -1,12 +1,12 @@
 "use server";
 
 import { createClient } from "@/lib/server";
-import { Sequence } from "@/lib/types/database.types";
+import { Collection, Sequence } from "@/lib/types/database.types";
 import { revalidatePath } from "next/cache";
 
 export async function createSequence(sequence: {
   name: string;
-  category_id: number;
+  collection_id: number;
 }): Promise<Sequence> {
   const supabase = await createClient();
 
@@ -22,6 +22,27 @@ export async function createSequence(sequence: {
   }
 
   // Revalidate the home page to show the new sequence
+  revalidatePath("/");
+
+  return data;
+}
+
+export async function createCollection(collection: {
+  name: string;
+}): Promise<Collection> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("collections")
+    .insert(collection)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating collection:", error);
+    throw new Error("Failed to create collection");
+  }
+
   revalidatePath("/");
 
   return data;

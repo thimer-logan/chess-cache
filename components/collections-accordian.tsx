@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CategoryWithSequences } from "@/lib/types/database.types";
+import { CollectionWithSequences } from "@/lib/types/database.types";
 import {
   Accordion,
   AccordionContent,
@@ -15,24 +15,26 @@ import { createSequence } from "@/app/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-interface CategoriesAccordianProps {
-  categories: CategoryWithSequences[];
+interface CollectionsAccordianProps {
+  collections: CollectionWithSequences[];
 }
 
-export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
+export function CollectionsAccordian({
+  collections,
+}: CollectionsAccordianProps) {
   const [isAddingSequence, setIsAddingSequence] = useState<string | null>(null);
   const [newSequenceName, setNewSequenceName] = useState("");
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
-  const handleAddSequence = async (categoryId: number) => {
+  const handleAddSequence = async (collectionId: number) => {
     if (!newSequenceName.trim()) return;
 
     try {
       setIsPending(true);
       await createSequence({
         name: newSequenceName.trim(),
-        category_id: categoryId,
+        collection_id: collectionId,
       });
       setNewSequenceName("");
       setIsAddingSequence(null);
@@ -47,20 +49,20 @@ export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
 
   return (
     <Accordion type="single" collapsible className="w-full">
-      {categories.map((category) => (
+      {collections.map((collection) => (
         <AccordionItem
-          key={category.id}
-          value={category.id.toString()}
+          key={collection.id}
+          value={collection.id.toString()}
           className="border-b border-border px-4 py-2 data-[state=open]:bg-accent/10 hover:bg-accent/10 rounded-lg transition-colors"
         >
           <AccordionTrigger className="text-lg font-semibold hover:no-underline cursor-pointer">
-            {category.name}
+            {collection.name}
           </AccordionTrigger>
           <AccordionContent className="px-4 py-2">
             <div className="space-y-4">
-              {category.sequences.length > 0 ? (
+              {collection.sequences.length > 0 ? (
                 <div className="space-y-2">
-                  {category.sequences.map((sequence) => (
+                  {collection.sequences.map((sequence) => (
                     <p
                       key={sequence.id}
                       className="text-sm hover:bg-accent/30 p-2 rounded-md cursor-pointer transition-colors"
@@ -76,7 +78,7 @@ export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
                 <p className="text-sm text-muted-foreground">No sequences</p>
               )}
 
-              {isAddingSequence === category.id.toString() ? (
+              {isAddingSequence === collection.id.toString() ? (
                 <div className="flex items-center gap-2">
                   <Input
                     placeholder="Enter sequence name"
@@ -87,7 +89,7 @@ export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
                     disabled={isPending}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !isPending) {
-                        handleAddSequence(category.id);
+                        handleAddSequence(collection.id);
                       } else if (e.key === "Escape") {
                         setIsAddingSequence(null);
                         setNewSequenceName("");
@@ -106,7 +108,7 @@ export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
                     <X className="h-4 w-4" />
                   </Button>
                   <Button
-                    onClick={() => handleAddSequence(category.id)}
+                    onClick={() => handleAddSequence(collection.id)}
                     disabled={!newSequenceName.trim() || isPending}
                   >
                     {isPending ? "Adding..." : "Add"}
@@ -117,7 +119,7 @@ export function CategoriesAccordian({ categories }: CategoriesAccordianProps) {
                   variant="outline"
                   size="sm"
                   className="w-full"
-                  onClick={() => setIsAddingSequence(category.id.toString())}
+                  onClick={() => setIsAddingSequence(collection.id.toString())}
                   disabled={isPending}
                 >
                   <Plus className="h-4 w-4 mr-2" />
