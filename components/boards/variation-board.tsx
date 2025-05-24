@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Chessboard, ChessboardDnDProvider } from "react-chessboard";
+import { Chessboard } from "react-chessboard";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Move, Orientation, Variation } from "@/lib/types/database.types";
 import { ChevronLeft, ChevronRight, FlipVertical2 } from "lucide-react";
 import MoveList from "./move-list";
 import { Chess } from "chess.js";
+
+const ChessboardDnDProvider = dynamic(
+  () => import("react-chessboard").then((mod) => mod.ChessboardDnDProvider),
+  { ssr: false }
+);
 
 interface VariationBoardProps {
   moves: Move[];

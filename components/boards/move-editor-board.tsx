@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, forwardRef, useImperativeHandle, useMemo } from "react";
-import { Chessboard, ChessboardDnDProvider } from "react-chessboard";
+import { Chessboard } from "react-chessboard";
 import { Button } from "@/components/ui/button";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import {
@@ -13,6 +13,12 @@ import {
 } from "lucide-react";
 import { Move, Orientation, Variation } from "@/lib/types/database.types";
 import ChessWrapper from "@/lib/chess-wrapper";
+import dynamic from "next/dynamic";
+
+const ChessboardDnDProvider = dynamic(
+  () => import("react-chessboard").then((mod) => mod.ChessboardDnDProvider),
+  { ssr: false }
+);
 
 interface MoveEditorBoardProps {
   variation: Variation;
