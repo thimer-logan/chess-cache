@@ -7,8 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Variation } from "@/lib/types/database.types";
 import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 interface VariationSelectProps {
   sequenceId: string;
@@ -21,6 +23,10 @@ export default function VariationSelect({
 }: VariationSelectProps) {
   const { variationId } = useParams();
   const router = useRouter();
+  const sortedVariations = useMemo(
+    () => variations.sort((a, b) => a.name.localeCompare(b.name)),
+    [variations]
+  );
 
   function handleChange(variationId: string) {
     router.push(`/sequences/${sequenceId}/${variationId}`);
@@ -32,7 +38,9 @@ export default function VariationSelect({
         <SelectValue placeholder="Select a variation" />
       </SelectTrigger>
       <SelectContent>
-        {variations.map((variation) => (
+        <SelectItem value="explore">Explore all</SelectItem>
+        <Separator className="my-2" />
+        {sortedVariations.map((variation) => (
           <SelectItem key={variation.id} value={variation.id.toString()}>
             {variation.name}
           </SelectItem>
