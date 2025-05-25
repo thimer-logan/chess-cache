@@ -2,17 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { Chessboard } from "react-chessboard";
-import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Move, Orientation, Variation } from "@/lib/types/database.types";
 import { ChevronLeft, ChevronRight, FlipVertical2 } from "lucide-react";
 import MoveList from "./move-list";
 import { Chess } from "chess.js";
-
-const ChessboardDnDProvider = dynamic(
-  () => import("react-chessboard").then((mod) => mod.ChessboardDnDProvider),
-  { ssr: false }
-);
 
 interface VariationBoardProps {
   moves: Move[];
@@ -27,27 +21,26 @@ export default function VariationBoard({
   const [boardOrientation, setBoardOrientation] = useState<Orientation>(
     variation.orientation
   );
-  const [currentPly, setCurrentPly] = useState(0);
+  const [currentPly, setCurrentPly] = useState(-1);
   const boardMoves = useMemo(() => {
     return [
-      {
-        ply: 0,
-        fen: variation.start_fen ?? undefined,
-      },
       ...moves.map((move) => ({
         ply: move.ply,
         fen: move.fen,
       })),
     ];
-  }, [moves, variation.start_fen]);
+  }, [moves]);
 
-  const canPlayPreviousMove = currentPly > 0;
+  const canPlayPreviousMove = currentPly >= 0;
   const canPlayNextMove = currentPly < boardMoves.length - 1;
 
   const playPreviousMove = () => {
     if (currentPly > 0) {
       setGame(new Chess(boardMoves[currentPly - 1].fen));
       setCurrentPly(currentPly - 1);
+    } else {
+      setGame(new Chess(variation.start_fen ?? undefined));
+      setCurrentPly(-1);
     }
   };
 
@@ -69,19 +62,17 @@ export default function VariationBoard({
     <div className="flex flex-col items-center gap-4">
       <div className="flex gap-8">
         <div className="w-full max-w-[600px]">
-          <ChessboardDnDProvider>
-            <Chessboard
-              id="VariationBoard"
-              position={game.fen()}
-              boardWidth={600}
-              boardOrientation={boardOrientation}
-              arePiecesDraggable={false}
-              customBoardStyle={{
-                borderRadius: "4px",
-                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
-              }}
-            />
-          </ChessboardDnDProvider>
+          <Chessboard
+            id="VariationBoard"
+            position={game.fen()}
+            boardWidth={600}
+            boardOrientation={boardOrientation}
+            arePiecesDraggable={false}
+            customBoardStyle={{
+              borderRadius: "4px",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+            }}
+          />
         </div>
         <MoveList
           moves={moves}
