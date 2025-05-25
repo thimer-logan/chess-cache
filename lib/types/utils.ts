@@ -6,3 +6,32 @@ export type WithOptional<T, K extends keyof T> = Omit<T, K> &
 export type MoveWithVariation = WithOptional<Move, "id">;
 
 export type ChessMove = Omit<Move, "id" | "variation_id">;
+
+/* Move Graph types*/
+export type FEN = string;
+export type UUID = string | number;
+
+export interface MoveEdge {
+  current: MoveWithVariation;
+  next: MoveWithVariation | null;
+}
+
+export interface MoveChoice {
+  san: string;
+  edges: MoveEdge[];
+}
+
+export type MoveGraph = Record<FEN, MoveEdge[]>;
+export interface MoveGraphNavigator {
+  readonly fen: FEN;
+  readonly lastMove?: MoveEdge;
+  readonly stack: readonly MoveEdge[];
+
+  next(edge: MoveEdge): void;
+  prev(): void;
+  reset(fen?: FEN): void;
+
+  outgoing(): MoveEdge[];
+  atStart(): boolean;
+  atEnd(): boolean;
+}

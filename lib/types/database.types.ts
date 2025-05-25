@@ -302,3 +302,7 @@ export type CollectionWithSequences = Collection & {
 export type SequenceWithVariations = Sequence & {
   variations: Variation[];
 };
+
+export type VariationWithMoves = Variation & {
+  moves: Move[];
+};
