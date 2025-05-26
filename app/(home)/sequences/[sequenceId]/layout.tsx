@@ -1,7 +1,9 @@
 import { getSequenceWithVariations } from "@/lib/api/sequences";
 import VariationSelect from "./variation-select";
 import type { ReactNode } from "react";
-import NewVariationDialog from "./new-variation-dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 export default async function SequenceLayout({
   params,
@@ -21,7 +23,12 @@ export default async function SequenceLayout({
           sequenceId={sequenceId}
           variations={sequence.variations}
         />
-        <NewVariationDialog sequenceId={sequence.id} />
+        <Button asChild>
+          <Link href={`/sequences/${sequenceId}/new`}>
+            <Plus className="h-4 w-4 mr-1" />
+            New Variation
+          </Link>
+        </Button>
       </div>
       {children}
     </div>

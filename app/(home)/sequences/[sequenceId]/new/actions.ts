@@ -1,15 +1,16 @@
 "use server";
 
 import { createClient } from "@/lib/server";
-import { Variation, Orientation } from "@/lib/types/database.types";
+import { Orientation } from "@/lib/types/database.types";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createVariation(variation: {
   name: string;
   sequence_id: number;
   start_fen: string;
   orientation: Orientation;
-}): Promise<Variation> {
+}) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -24,5 +25,5 @@ export async function createVariation(variation: {
   }
 
   revalidatePath(`/sequences/${variation.sequence_id}`);
-  return data;
+  redirect(`/sequences/${variation.sequence_id}/${data.id}`);
 }

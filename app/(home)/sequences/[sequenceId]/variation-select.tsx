@@ -33,7 +33,7 @@ export default function VariationSelect({
   }
 
   return (
-    <Select onValueChange={handleChange} defaultValue={variationId as string}>
+    <Select onValueChange={handleChange} value={variationId as string}>
       <SelectTrigger>
         <SelectValue placeholder="Select a variation" />
       </SelectTrigger>
