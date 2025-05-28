@@ -3,16 +3,18 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { Chess, validateFen } from "chess.js";
 import { useMemo } from "react";
-import {
-  Chessboard,
-  ChessboardDnDProvider,
-  SparePiece,
-} from "react-chessboard";
+import { Chessboard, SparePiece } from "react-chessboard";
 import { Piece, Square } from "react-chessboard/dist/chessboard/types";
 import { getPieceFromReactChessboard } from "@/lib/helpers";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const ChessboardDnDProvider = dynamic(
+  () => import("react-chessboard").then((mod) => mod.ChessboardDnDProvider),
+  { ssr: false }
+);
 
 const pieces = [
   "wP",

@@ -12,7 +12,7 @@ import {
 
 export interface ChessBoardProps extends ChessboardProps {
   game: Chess;
-  onMove: (move: { from: string; to: string; promotion?: string }) => boolean;
+  onMove?: (move: { from: string; to: string; promotion?: string }) => boolean;
 }
 
 export interface ChessBoardRef {
@@ -127,7 +127,7 @@ const ChessBoard = forwardRef<ChessBoardRef, ChessBoardProps>(
           return;
         }
 
-        const move = onMove({
+        const move = onMove?.({
           from: selectedSquare,
           to: square,
           promotion: "q",
@@ -176,11 +176,12 @@ const ChessBoard = forwardRef<ChessBoardRef, ChessBoardProps>(
       targetSquare: Square,
       piece: Piece
     ) => {
-      return onMove({
+      const move = onMove?.({
         from: sourceSquare,
         to: targetSquare,
         promotion: piece[1].toLowerCase() ?? "q",
       });
+      return move ?? false;
     };
 
     return (

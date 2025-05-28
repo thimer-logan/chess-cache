@@ -13,17 +13,10 @@ import {
 } from "lucide-react";
 import { Move, Orientation, Variation } from "@/lib/types/database.types";
 import ChessWrapper from "@/lib/chess-wrapper";
-import dynamic from "next/dynamic";
-
-const ChessboardDnDProvider = dynamic(
-  () => import("react-chessboard").then((mod) => mod.ChessboardDnDProvider),
-  { ssr: false }
-);
 
 interface MoveEditorBoardProps {
   variation: Variation;
   moves: Move[];
-  boardWidth?: number;
 }
 
 type Squares = Record<
@@ -36,7 +29,7 @@ export interface MoveEditorBoardRef {
 }
 
 const MoveEditorBoard = forwardRef<MoveEditorBoardRef, MoveEditorBoardProps>(
-  ({ moves, boardWidth = 600, variation }, ref) => {
+  ({ moves, variation }, ref) => {
     const game = useMemo(
       () => new ChessWrapper(moves, variation.start_fen ?? undefined),
       [moves, variation.start_fen]
@@ -214,13 +207,12 @@ const MoveEditorBoard = forwardRef<MoveEditorBoardRef, MoveEditorBoardProps>(
 
     return (
       <div className="flex flex-col items-center gap-4">
-        <div className="w-full max-w-[600px]">
-          <ChessboardDnDProvider>
+        <div className="grid grid-cols-1 gap-4 w-full max-w-[600px]">
+          <div className="flex justify-center w-full">
             <Chessboard
               position={boardPosition}
               boardOrientation={boardOrientation}
               onPieceDrop={onDrop}
-              boardWidth={boardWidth}
               onSquareClick={onSquareClick}
               onSquareRightClick={onSquareRightClick}
               customSquareStyles={{
@@ -235,44 +227,44 @@ const MoveEditorBoard = forwardRef<MoveEditorBoardRef, MoveEditorBoardProps>(
               showPromotionDialog={showPromotionDialog}
               id="MoveEditorBoard"
             />
-          </ChessboardDnDProvider>
-        </div>
-        <div className="flex gap-4">
-          <div className="flex gap-2">
+          </div>
+          <div className="flex gap-4 justify-end">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={playPreviousMove}
+                disabled={!canPlayPreviousMove}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={playNextMove}
+                disabled={!canPlayNextMove}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={undoMove} disabled={!canUndo}>
+                <Undo2 />
+              </Button>
+              <Button variant="outline" onClick={redoMove} disabled={!canRedo}>
+                <Redo2 />
+              </Button>
+            </div>
             <Button
               variant="outline"
-              onClick={playPreviousMove}
-              disabled={!canPlayPreviousMove}
+              onClick={() => {
+                setBoardOrientation(
+                  boardOrientation === "white" ? "black" : "white"
+                );
+              }}
             >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={playNextMove}
-              disabled={!canPlayNextMove}
-            >
-              <ChevronRight className="h-4 w-4" />
+              <FlipVertical2 />
+              Flip board
             </Button>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={undoMove} disabled={!canUndo}>
-              <Undo2 />
-            </Button>
-            <Button variant="outline" onClick={redoMove} disabled={!canRedo}>
-              <Redo2 />
-            </Button>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setBoardOrientation(
-                boardOrientation === "white" ? "black" : "white"
-              );
-            }}
-          >
-            <FlipVertical2 />
-            Flip board
-          </Button>
         </div>
       </div>
     );

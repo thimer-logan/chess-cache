@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Chessboard } from "react-chessboard";
 import { Button } from "@/components/ui/button";
 import { Move, Orientation, Variation } from "@/lib/types/database.types";
 import { ChevronLeft, ChevronRight, FlipVertical2 } from "lucide-react";
 import MoveList from "./move-list";
 import { Chess } from "chess.js";
+import ChessBoard from "./chess-board";
 
 interface VariationBoardProps {
   moves: Move[];
@@ -60,53 +60,51 @@ export default function VariationBoard({
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex gap-8">
-        <div className="w-full max-w-[600px]">
-          <Chessboard
-            id="VariationBoard"
-            position={game.fen()}
-            boardWidth={600}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
+        <div className="sm:col-span-2">
+          <ChessBoard
+            game={game}
             boardOrientation={boardOrientation}
             arePiecesDraggable={false}
-            customBoardStyle={{
-              borderRadius: "4px",
-              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
-            }}
+          />
+          <div className="flex flex-row justify-end gap-4 mt-2">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={playPreviousMove}
+                disabled={!canPlayPreviousMove}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={playNextMove}
+                disabled={!canPlayNextMove}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setBoardOrientation(
+                  boardOrientation === "white" ? "black" : "white"
+                );
+              }}
+            >
+              <FlipVertical2 />
+              Flip board
+            </Button>
+          </div>
+        </div>
+        <div className="sm:col-span-1">
+          <MoveList
+            moves={moves}
+            currentPly={currentPly}
+            onMoveClick={handleMoveClick}
+            className="w-full"
           />
         </div>
-        <MoveList
-          moves={moves}
-          currentPly={currentPly}
-          onMoveClick={handleMoveClick}
-          className="w-[300px]"
-        />
-      </div>
-      <div className="flex gap-4">
-        <Button
-          variant="outline"
-          onClick={playPreviousMove}
-          disabled={!canPlayPreviousMove}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          onClick={playNextMove}
-          disabled={!canPlayNextMove}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setBoardOrientation(
-              boardOrientation === "white" ? "black" : "white"
-            );
-          }}
-        >
-          <FlipVertical2 />
-          Flip board
-        </Button>
       </div>
     </div>
   );
