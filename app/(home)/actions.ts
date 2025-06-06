@@ -1,49 +1,51 @@
 "use server";
 
-import { createClient } from "@/lib/server";
+import { createCollection, deleteCollection } from "@/lib/api/collections";
+import { createSequence } from "@/lib/api/sequences";
 import { Collection, Sequence } from "@/lib/types/database.types";
+import { ActionResult } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-export async function createSequence(sequence: {
+export async function createSequenceAction(sequence: {
   name: string;
   collection_id: number;
-}): Promise<Sequence> {
-  const supabase = await createClient();
+}): Promise<ActionResult<Sequence>> {
+  try {
+    const data = await createSequence(sequence);
 
-  const { data, error } = await supabase
-    .from("sequences")
-    .insert(sequence)
-    .select()
-    .single();
-
-  if (error) {
+    revalidatePath("/");
+    return { ok: true, data };
+  } catch (error) {
     console.error("Error creating sequence:", error);
-    throw new Error("Failed to create sequence");
+    return { ok: false, error: "Failed to create sequence" };
   }
-
-  // Revalidate the home page to show the new sequence
-  revalidatePath("/");
-
-  return data;
 }
 
-export async function createCollection(collection: {
+export async function createCollectionAction(collection: {
   name: string;
-}): Promise<Collection> {
-  const supabase = await createClient();
+}): Promise<ActionResult<Collection>> {
+  try {
+    const data = await createCollection(collection);
 
-  const { data, error } = await supabase
-    .from("collections")
-    .insert(collection)
-    .select()
-    .single();
-
-  if (error) {
+    revalidatePath("/");
+    return { ok: true, data };
+  } catch (error) {
     console.error("Error creating collection:", error);
-    throw new Error("Failed to create collection");
+    return { ok: false, error: "Failed to create collection" };
+  }
+}
+
+export async function deleteCollectionAction(
+  collectionId: string
+): Promise<ActionResult<void>> {
+  try {
+    await deleteCollection(collectionId);
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+    return { ok: false, error: "Failed to delete collection" };
   }
 
   revalidatePath("/");
-
-  return data;
+  redirect("/");
 }

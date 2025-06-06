@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { createCollection } from "./actions";
+import { createCollectionAction } from "./actions";
 
 export default function NewCollectionDialog() {
   const [name, setName] = useState("");
@@ -23,25 +23,25 @@ export default function NewCollectionDialog() {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      toast.error("Please enter a variation name");
+      toast.error("Please enter a collection name");
       return;
     }
 
     setIsLoading(true);
-    try {
-      await createCollection({
-        name: name.trim(),
-      });
 
-      setOpen(false);
-      setName("");
-      toast.success("Variation created successfully");
-    } catch (error) {
-      console.error("Error creating variation:", error);
-      toast.error("Failed to create variation");
-    } finally {
-      setIsLoading(false);
+    const result = await createCollectionAction({
+      name: name.trim(),
+    });
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
     }
+
+    setOpen(false);
+    setName("");
+    toast.success("Collection created successfully");
+    setIsLoading(false);
   };
 
   return (
@@ -54,7 +54,7 @@ export default function NewCollectionDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Category</DialogTitle>
+          <DialogTitle>New Collection</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="name" className="text-right">

@@ -1,13 +1,11 @@
-"use server";
-
-import { createClient } from "@/lib/server";
 import {
   Collection,
   CollectionWithSequences,
 } from "@/lib/types/database.types";
+import { getSupabase } from "../supabase";
 
 export async function getCollections(): Promise<Collection[]> {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("collections")
@@ -25,7 +23,7 @@ export async function getCollections(): Promise<Collection[]> {
 export async function getCollectionsWithSequences(): Promise<
   CollectionWithSequences[]
 > {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("collections")
@@ -52,7 +50,7 @@ export async function getCollectionsWithSequences(): Promise<
 export async function getCollectionById(
   id: string
 ): Promise<Collection | null> {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("collections")
@@ -66,4 +64,37 @@ export async function getCollectionById(
   }
 
   return data;
+}
+
+export async function createCollection(collection: {
+  name: string;
+}): Promise<Collection> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("collections")
+    .insert(collection)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function deleteCollection(collectionId: string): Promise<boolean> {
+  const supabase = await getSupabase();
+
+  const { error } = await supabase
+    .from("collections")
+    .delete()
+    .eq("id", collectionId);
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
 }

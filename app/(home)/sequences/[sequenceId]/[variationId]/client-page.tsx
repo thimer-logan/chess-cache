@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Move, Variation } from "@/lib/types/database.types";
 import { useRef, useState } from "react";
 import { ChessMove, MoveWithVariation } from "@/lib/types/utils";
-import { saveVariationMoves } from "./actions";
+import { saveVariationMovesAction } from "./actions";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,7 +33,11 @@ export default function ClientPage({ moves, variation }: ClientPageProps) {
           variation_id: variation.id,
         }));
         console.log(moves);
-        await saveVariationMoves(variation.id, variation.sequence_id, moves);
+        await saveVariationMovesAction(
+          variation.id,
+          variation.sequence_id,
+          moves
+        );
         setIsEditing(false);
       } catch (error) {
         console.error("Error saving variation moves:", error);

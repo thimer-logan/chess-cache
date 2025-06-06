@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { createVariation } from "./actions";
+import { createVariationAction } from "./actions";
 
 export default function NewVariationForm({
   sequenceId,
@@ -37,7 +37,7 @@ export default function NewVariationForm({
 
     setIsLoading(true);
 
-    await createVariation({
+    await createVariationAction({
       name: name.trim(),
       sequence_id: parseInt(sequenceId),
       start_fen: startFen,

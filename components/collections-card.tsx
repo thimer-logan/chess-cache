@@ -3,7 +3,7 @@ import { CollectionsAccordian } from "@/components/collections-accordian";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
 import NewCollectionDialog from "@/app/(home)/new-collection-dialog";
-import { createSequence } from "@/app/(home)/actions";
+import { createSequenceAction } from "@/app/(home)/actions";
 interface CollectionsCardProps {
   collections: CollectionWithSequences[];
   className?: string;
@@ -22,7 +22,7 @@ export default function CollectionsCard({
       <CardContent>
         <CollectionsAccordian
           collections={collections}
-          createSequenceAction={createSequence}
+          createSequenceAction={createSequenceAction}
         />
       </CardContent>
     </Card>

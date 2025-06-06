@@ -13,13 +13,15 @@ import { Input } from "./ui/input";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { ActionResult } from "@/lib/types/utils";
 
 interface CollectionsAccordianProps {
   collections: CollectionWithSequences[];
   createSequenceAction: (sequence: {
     name: string;
     collection_id: number;
-  }) => Promise<Sequence>;
+  }) => Promise<ActionResult<Sequence>>;
 }
 
 export function CollectionsAccordian({
@@ -34,21 +36,20 @@ export function CollectionsAccordian({
   const handleAddSequence = async (collectionId: number) => {
     if (!newSequenceName.trim()) return;
 
-    try {
-      setIsPending(true);
-      await createSequenceAction({
-        name: newSequenceName.trim(),
-        collection_id: collectionId,
-      });
-      setNewSequenceName("");
-      setIsAddingSequence(null);
-      toast.success("Sequence created successfully");
-    } catch (error) {
-      console.error("Failed to create sequence:", error);
-      toast.error("Failed to create sequence");
-    } finally {
-      setIsPending(false);
+    setIsPending(true);
+    const result = await createSequenceAction({
+      name: newSequenceName.trim(),
+      collection_id: collectionId,
+    });
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
     }
+
+    setNewSequenceName("");
+    setIsAddingSequence(null);
+    toast.success("Sequence created successfully");
   };
 
   return (
@@ -57,10 +58,20 @@ export function CollectionsAccordian({
         <AccordionItem
           key={collection.id}
           value={collection.id.toString()}
-          className="border-b border-border px-4 py-2 data-[state=open]:bg-accent/10 hover:bg-accent/10 rounded-lg transition-colors"
+          className="border-b border-border px-4 py-2 data-[state=open]:bg-background hover:bg-background rounded-lg transition-colors"
         >
-          <AccordionTrigger className="text-lg font-semibold hover:no-underline cursor-pointer">
+          <AccordionTrigger className="flex items-center text-lg font-semibold hover:no-underline cursor-pointer">
+            <Image
+              src="/images/shield.png"
+              alt="Chess"
+              width={50}
+              height={50}
+              className="mr-2"
+            />
             {collection.name}
+            <span className="ml-auto text-sm text-muted-foreground">
+              {collection.sequences.length}&nbsp;Sequences
+            </span>
           </AccordionTrigger>
           <AccordionContent className="px-4 py-2">
             <div className="space-y-4">

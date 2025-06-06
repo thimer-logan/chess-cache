@@ -35,3 +35,9 @@ export interface MoveGraphNavigator {
   atStart(): boolean;
   atEnd(): boolean;
 }
+
+export type ActionResult<T> = {
+  ok: boolean;
+  data?: T;
+  error?: string;
+};

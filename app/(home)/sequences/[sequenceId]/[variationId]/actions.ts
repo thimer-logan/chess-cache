@@ -1,11 +1,15 @@
 "use server";
 
+import {
+  deleteVariationMoves,
+  saveVariationStartFen,
+} from "@/lib/api/variations";
 import { createClient } from "@/lib/server";
 import { Variation } from "@/lib/types/database.types";
-import { MoveWithVariation } from "@/lib/types/utils";
+import { ActionResult, MoveWithVariation } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
 
-export async function saveVariationMoves(
+export async function saveVariationMovesAction(
   variationId: number,
   sequenceId: number,
   moves: MoveWithVariation[]
@@ -43,39 +47,31 @@ export async function saveVariationMoves(
   return data;
 }
 
-export async function deleteVariationMoves(variation: Variation) {
-  const supabase = await createClient();
+export async function deleteVariationMovesAction(
+  variation: Variation
+): Promise<ActionResult<void>> {
+  try {
+    await deleteVariationMoves(variation.id);
 
-  const { data, error } = await supabase
-    .from("moves")
-    .delete()
-    .eq("variation_id", variation.id);
-
-  if (error) {
+    revalidatePath(`/sequences/${variation.sequence_id}/${variation.id}`);
+    return { ok: true };
+  } catch (error) {
     console.error("Error deleting variation moves:", error);
-    throw new Error("Failed to delete variation moves");
+    return { ok: false, error: "Failed to delete variation moves" };
   }
-
-  revalidatePath(`/sequences/${variation.sequence_id}/${variation.id}`);
-  return data;
 }
 
-export async function saveVariationStartFen(variationId: number, fen: string) {
-  const supabase = await createClient();
+export async function saveVariationStartFenAction(
+  variationId: number,
+  fen: string
+): Promise<ActionResult<Variation>> {
+  try {
+    const data = await saveVariationStartFen(variationId, fen);
 
-  const { data, error } = await supabase
-    .from("variations")
-    .update({ start_fen: fen })
-    .eq("id", variationId)
-    .select()
-    .single();
-
-  if (error) {
+    revalidatePath(`/sequences/${data.sequence_id}/${variationId}`);
+    return { ok: true, data };
+  } catch (error) {
     console.error("Error saving variation start fen:", error);
-    throw new Error("Failed to save variation start fen");
+    return { ok: false, error: "Failed to save variation start fen" };
   }
-
-  revalidatePath(`/sequences/${data.sequence_id}/${variationId}`);
-
-  return data;
 }
