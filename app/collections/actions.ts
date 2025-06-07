@@ -5,7 +5,6 @@ import { createSequence } from "@/lib/api/sequences";
 import { Collection, Sequence } from "@/lib/types/database.types";
 import { ActionResult } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function createSequenceAction(sequence: {
   name: string;
@@ -47,5 +46,5 @@ export async function deleteCollectionAction(
   }
 
   revalidatePath("/");
-  redirect("/");
+  return { ok: true };
 }
