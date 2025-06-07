@@ -3,9 +3,11 @@ import NewVariationForm from "./new-variation-form";
 export default async function NewVariationPage({
   params,
 }: {
-  params: Promise<{ sequenceId: string }>;
+  params: Promise<{ collectionId: string; sequenceId: string }>;
 }) {
-  const { sequenceId } = await params;
+  const { collectionId, sequenceId } = await params;
 
-  return <NewVariationForm sequenceId={sequenceId} />;
+  return (
+    <NewVariationForm collectionId={collectionId} sequenceId={sequenceId} />
+  );
 }

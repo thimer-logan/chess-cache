@@ -11,6 +11,7 @@ import { ChessMove, MoveWithVariation } from "@/lib/types/utils";
 import { saveVariationMovesAction } from "./actions";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 interface ClientPageProps {
   moves: Move[];
@@ -21,6 +22,7 @@ export default function ClientPage({ moves, variation }: ClientPageProps) {
   const moveEditorBoardRef = useRef<MoveEditorBoardRef>(null);
   const [isEditing, setIsEditing] = useState(moves.length === 0);
   const [isLoading, setIsLoading] = useState(false);
+  const { collectionId } = useParams();
 
   const handleSave = async () => {
     if (moveEditorBoardRef.current) {
@@ -36,6 +38,7 @@ export default function ClientPage({ moves, variation }: ClientPageProps) {
         await saveVariationMovesAction(
           variation.id,
           variation.sequence_id,
+          collectionId as string,
           moves
         );
         setIsEditing(false);

@@ -13,7 +13,7 @@ export async function createSequenceAction(sequence: {
   try {
     const data = await createSequence(sequence);
 
-    revalidatePath("/");
+    revalidatePath("/collections");
     return { ok: true, data };
   } catch (error) {
     console.error("Error creating sequence:", error);
@@ -27,7 +27,7 @@ export async function createCollectionAction(collection: {
   try {
     const data = await createCollection(collection);
 
-    revalidatePath("/");
+    revalidatePath("/collections");
     return { ok: true, data };
   } catch (error) {
     console.error("Error creating collection:", error);
@@ -45,6 +45,6 @@ export async function deleteCollectionAction(
     return { ok: false, error: "Failed to delete collection" };
   }
 
-  revalidatePath("/");
+  revalidatePath("/collections");
   return { ok: true };
 }

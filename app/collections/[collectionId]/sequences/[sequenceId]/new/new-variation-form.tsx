@@ -9,8 +9,10 @@ import { toast } from "sonner";
 import { createVariationAction } from "./actions";
 
 export default function NewVariationForm({
+  collectionId,
   sequenceId,
 }: {
+  collectionId: string;
   sequenceId: string;
 }) {
   const [name, setName] = useState("");
@@ -37,12 +39,15 @@ export default function NewVariationForm({
 
     setIsLoading(true);
 
-    await createVariationAction({
-      name: name.trim(),
-      sequence_id: parseInt(sequenceId),
-      start_fen: startFen,
-      orientation: orientation,
-    });
+    await createVariationAction(
+      {
+        name: name.trim(),
+        sequence_id: parseInt(sequenceId),
+        start_fen: startFen,
+        orientation: orientation,
+      },
+      collectionId
+    );
   };
 
   return (

@@ -6,7 +6,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function deleteSequenceAction(
-  sequenceId: string
+  sequenceId: string,
+  collectionId: string
 ): Promise<ActionResult<void>> {
   try {
     await deleteSequence(sequenceId);
@@ -15,6 +16,6 @@ export async function deleteSequenceAction(
     return { ok: false, error: "Failed to delete sequence" };
   }
 
-  revalidatePath("/");
-  redirect("/");
+  revalidatePath(`/collections/${collectionId}`);
+  redirect(`/collections/${collectionId}`);
 }

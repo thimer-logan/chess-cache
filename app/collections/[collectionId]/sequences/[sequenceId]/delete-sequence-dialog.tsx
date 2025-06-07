@@ -13,16 +13,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 export default function DeleteSequenceDialog({
   sequenceId,
+  collectionId,
 }: {
   sequenceId: string;
+  collectionId: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const showDelete = searchParams.get("delete") === "true";
 
   const handleDelete = async () => {
-    await deleteSequenceAction(sequenceId);
-    router.push("/");
+    await deleteSequenceAction(sequenceId, collectionId);
   };
 
   const handleCancel = () => {

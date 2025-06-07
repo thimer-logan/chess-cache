@@ -6,12 +6,15 @@ import { ActionResult } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createVariationAction(variation: {
-  name: string;
-  sequence_id: number;
-  start_fen: string;
-  orientation: Orientation;
-}): Promise<ActionResult<Variation>> {
+export async function createVariationAction(
+  variation: {
+    name: string;
+    sequence_id: number;
+    start_fen: string;
+    orientation: Orientation;
+  },
+  collectionId: string
+): Promise<ActionResult<Variation>> {
   const response: ActionResult<Variation> = {
     ok: false,
     error: "Failed to create variation",
@@ -27,6 +30,10 @@ export async function createVariationAction(variation: {
     return response;
   }
 
-  revalidatePath(`/sequences/${variation.sequence_id}`);
-  redirect(`/sequences/${variation.sequence_id}/${response.data?.id}`);
+  revalidatePath(
+    `/collections/${collectionId}/sequences/${variation.sequence_id}`
+  );
+  redirect(
+    `/collections/${collectionId}/sequences/${variation.sequence_id}/${response.data?.id}`
+  );
 }

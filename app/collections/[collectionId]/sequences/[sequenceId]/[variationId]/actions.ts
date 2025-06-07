@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 export async function saveVariationMovesAction(
   variationId: number,
   sequenceId: number,
+  collectionId: string,
   moves: MoveWithVariation[]
 ) {
   const supabase = await createClient();
@@ -43,17 +44,22 @@ export async function saveVariationMovesAction(
     throw new Error("Failed to save variation");
   }
 
-  revalidatePath(`/sequences/${sequenceId}/${variationId}`);
+  revalidatePath(
+    `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
+  );
   return data;
 }
 
 export async function deleteVariationMovesAction(
-  variation: Variation
+  variation: Variation,
+  collectionId: string
 ): Promise<ActionResult<void>> {
   try {
     await deleteVariationMoves(variation.id);
 
-    revalidatePath(`/sequences/${variation.sequence_id}/${variation.id}`);
+    revalidatePath(
+      `/collections/${collectionId}/sequences/${variation.sequence_id}/${variation.id}`
+    );
     return { ok: true };
   } catch (error) {
     console.error("Error deleting variation moves:", error);
@@ -67,8 +73,6 @@ export async function saveVariationStartFenAction(
 ): Promise<ActionResult<Variation>> {
   try {
     const data = await saveVariationStartFen(variationId, fen);
-
-    revalidatePath(`/sequences/${data.sequence_id}/${variationId}`);
     return { ok: true, data };
   } catch (error) {
     console.error("Error saving variation start fen:", error);
