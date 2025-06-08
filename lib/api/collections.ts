@@ -99,3 +99,24 @@ export async function deleteCollection(collectionId: string): Promise<boolean> {
 
   return true;
 }
+
+export async function updateCollection(collection: {
+  id: number;
+  name: string;
+  image: string;
+}): Promise<Collection> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("collections")
+    .update(collection)
+    .eq("id", collection.id)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}

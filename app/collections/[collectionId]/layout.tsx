@@ -5,12 +5,13 @@ import {
 import { getSupabase } from "@/lib/supabase";
 
 export default async function CollectionLayout({
-  params: { collectionId },
+  params,
   children,
 }: {
-  params: { collectionId: string };
+  params: Promise<{ collectionId: string }>;
   children: React.ReactNode;
 }) {
+  const { collectionId } = await params;
   const supabase = await getSupabase();
 
   const {

@@ -9,20 +9,25 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { deleteCollectionAction } from "./actions";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/submit-button";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export default function DeleteCollectionDialog() {
+interface DeleteCollectionDialogProps {
+  collectionId: string;
+  children: React.ReactNode;
+}
+
+export default function DeleteCollectionDialog({
+  collectionId,
+  children,
+}: DeleteCollectionDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const showDelete = searchParams.get("delete") === "true";
-  const collectionId = searchParams.get("collectionId");
+  const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
     if (!collectionId) {
@@ -39,21 +44,15 @@ export default function DeleteCollectionDialog() {
       return;
     }
     toast.success("Collection deleted successfully");
-    router.push("/collections");
   };
 
   const handleCancel = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("delete");
-    params.delete("collectionId");
-    router.replace(`?${params.toString()}`, { scroll: false });
+    setOpen(false);
   };
 
   return (
-    <AlertDialog
-      open={showDelete && !!collectionId}
-      onOpenChange={handleCancel}
-    >
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

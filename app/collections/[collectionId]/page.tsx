@@ -4,8 +4,10 @@ import { getCollectionById } from "@/lib/api/collections";
 import { getSequencesByCollectionId } from "@/lib/api/sequences";
 import { IfOwner } from "@/lib/contexts/collection-acl";
 import SequencesList from "@/components/sequences-list";
-import { Share } from "lucide-react";
+import { Pencil, Share, Trash2 } from "lucide-react";
 import Image from "next/image";
+import EditCollectionDialog from "./edit-collection-dialog";
+import DeleteCollectionDialog from "./delete-collection-dialog";
 
 export default async function CollectionPage({
   params,
@@ -31,13 +33,25 @@ export default async function CollectionPage({
         />
         <CardTitle className="text-2xl font-bold">{collection.name}</CardTitle>
         <IfOwner>
-          <div className="inline-flex items-center gap-6 ml-auto">
-            <div className="flex flex-col items-center gap-2">
-              <Button>
-                <Share />
-                Share
+          <div className="inline-flex items-center gap-2 ml-auto">
+            <Button>
+              <Share />
+              Share
+            </Button>
+            <EditCollectionDialog collection={collection}>
+              <Button variant="outline" size="icon">
+                <Pencil className="w-4 h-4" />
               </Button>
-            </div>
+            </EditCollectionDialog>
+            <DeleteCollectionDialog collectionId={collectionId}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="text-destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </DeleteCollectionDialog>
           </div>
         </IfOwner>
       </CardHeader>
