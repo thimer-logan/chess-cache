@@ -17,6 +17,23 @@ export async function getSequence(id: string): Promise<Sequence> {
   return data;
 }
 
+export async function getSequencesByCollectionId(
+  collectionId: string
+): Promise<SequenceWithVariations[]> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("sequences")
+    .select("*, variations(*)")
+    .eq("collection_id", collectionId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 export async function getSequenceWithVariations(
   id: string
 ): Promise<SequenceWithVariations> {
