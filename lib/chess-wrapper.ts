@@ -1,32 +1,32 @@
-import { Chess, Square } from "chess.js";
+import { Chess, Square, Move } from "chess.js";
 import { ChessMove } from "./types/utils";
 
 class ChessWrapper {
   chess: Chess;
-  history: ChessMove[];
+  moveHistory: Move[];
+  currentPosition: number;
   initialPosition: string;
-  currentIndex: number;
-  isReset?: boolean;
+  isReset: boolean = false;
+  hasMoved: boolean = false;
 
   constructor(moves?: ChessMove[], initialPosition?: string) {
     this.chess = new Chess();
     this.chess.load(initialPosition ?? this.chess.fen());
     this.initialPosition = initialPosition ?? this.chess.fen();
-
-    this.history = [
-      {
-        fen: this.initialPosition,
-        ply: 0,
-        san: "",
-      },
-    ];
+    this.moveHistory = [];
+    this.currentPosition = -1;
 
     if (moves && moves.length > 0) {
-      this.history = [...this.history, ...moves];
-      this.currentIndex = moves.length - 1;
+      const tempChess = new Chess();
+      tempChess.load(this.initialPosition);
+      // Store moves without applying them
+      moves.forEach((move) => {
+        const result = tempChess.move(move.san);
+        if (result) {
+          this.moveHistory.push(result);
+        }
+      });
     }
-
-    this.currentIndex = 0;
   }
 
   getOrientation() {
@@ -48,51 +48,39 @@ class ChessWrapper {
       return null;
     }
 
-    // Check if the board is not in the latest state of the history
-    if (this.history.length !== this.currentIndex + 1) {
-      const regression = this.history.length - (this.currentIndex + 1);
-      this.history.splice(-regression);
+    this.hasMoved = true;
+
+    // If we're not at the end of the move history, truncate it
+    if (this.currentPosition < this.moveHistory.length - 1) {
+      this.moveHistory = this.moveHistory.slice(0, this.currentPosition + 1);
     }
 
-    this.history = [
-      ...this.history,
-      {
-        fen: this.chess.fen(),
-        ply: this.history.length,
-        san: moved.san,
-      },
-    ];
-    this.currentIndex++;
+    this.moveHistory.push(moved);
+    this.currentPosition++;
 
     return moved;
   }
 
   reset() {
     this.isReset = true;
-    this.chess.reset();
-    this.history = [];
-
-    this.currentIndex = 0;
+    this.chess.load(this.initialPosition);
+    this.moveHistory = [];
+    this.currentPosition = -1;
   }
 
   undo() {
-    const previousPosition = this.history[this.currentIndex - 1];
-    if (!previousPosition) {
-      return;
-    }
+    if (this.currentPosition < 0) return;
 
-    this.chess.load(previousPosition.fen);
-    this.currentIndex--;
+    this.chess.undo();
+    this.currentPosition--;
   }
 
   redo() {
-    const nextPosition = this.history[this.currentIndex + 1];
+    if (this.currentPosition >= this.moveHistory.length - 1) return;
 
-    if (!nextPosition) {
-      return;
-    }
-    this.currentIndex++;
-    this.chess.load(nextPosition.fen);
+    this.currentPosition++;
+    const move = this.moveHistory[this.currentPosition];
+    this.chess.move(move);
   }
 
   getMoveOptions(square: Square) {
@@ -111,37 +99,54 @@ class ChessWrapper {
   }
 
   getHistory() {
-    return this.history.slice(1);
+    return this.moveHistory.map((move, index) => ({
+      fen: move.after,
+      ply: index,
+      san: move.san,
+    }));
   }
 
   getCurrentIndex() {
-    return this.currentIndex;
+    return this.currentPosition;
   }
 
   isFirstMove() {
-    return this.currentIndex === 0;
+    return this.currentPosition === -1;
   }
 
   isLastMove() {
-    return this.currentIndex === this.history.length - 1;
+    return this.currentPosition === this.moveHistory.length - 1;
   }
 
   playNextMove() {
-    if (this.currentIndex >= this.history.length - 1) {
-      return;
-    }
-    this.currentIndex++;
-    console.log(this.history[this.currentIndex]);
-    this.chess.load(this.history[this.currentIndex].fen);
+    if (this.currentPosition >= this.moveHistory.length - 1) return;
+
+    this.currentPosition++;
+    const move = this.moveHistory[this.currentPosition];
+    this.chess.move(move);
   }
 
   playPreviousMove() {
-    if (this.currentIndex <= 0) {
+    if (this.currentPosition < 0) {
       this.chess.load(this.initialPosition);
       return;
     }
-    this.currentIndex--;
-    this.chess.load(this.history[this.currentIndex].fen);
+
+    this.chess.undo();
+    this.currentPosition--;
+  }
+
+  getCurrentPly() {
+    return this.currentPosition;
+  }
+
+  goToPly(ply: number) {
+    if (ply < 0 || ply >= this.moveHistory.length) {
+      return false;
+    }
+    this.currentPosition = ply;
+    this.chess.load(this.moveHistory[ply].after);
+    return true;
   }
 }
 
