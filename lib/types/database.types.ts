@@ -90,6 +90,27 @@ export type Database = {
           }
         ];
       };
+      profiles: {
+        Row: {
+          created_at: string;
+          first_name: string;
+          id: string;
+          last_name: string;
+        };
+        Insert: {
+          created_at?: string;
+          first_name?: string;
+          id: string;
+          last_name?: string;
+        };
+        Update: {
+          created_at?: string;
+          first_name?: string;
+          id?: string;
+          last_name?: string;
+        };
+        Relationships: [];
+      };
       sequences: {
         Row: {
           collection_id: number;
@@ -292,6 +313,7 @@ export const Constants = {
   },
 } as const;
 
+export type Profile = Tables<"profiles">;
 export type Collection = Tables<"collections">;
 export type Sequence = Tables<"sequences">;
 export type Variation = Tables<"variations">;
