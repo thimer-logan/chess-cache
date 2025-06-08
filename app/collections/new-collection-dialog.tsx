@@ -18,6 +18,7 @@ import { createCollectionAction } from "./actions";
 import Image from "next/image";
 import { CHESS_IMAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import SubmitButton from "@/components/submit-button";
 
 export default function NewCollectionDialog() {
   const [name, setName] = useState("");
@@ -88,17 +89,19 @@ export default function NewCollectionDialog() {
           <Label htmlFor="image" className="text-right">
             Image
           </Label>
-          <div className="col-span-3 flex items-center gap-2">
+          <div className="col-span-3 flex items-center flex-wrap gap-2">
             {CHESS_IMAGES.map((img) => (
               <Image
                 key={img}
                 src={`/images/${img}`}
                 alt={`${img}`}
-                width={50}
-                height={50}
+                width={60}
+                height={60}
                 className={cn(
-                  "cursor-pointer",
-                  image === img ? "border-2 border-primary" : ""
+                  "cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-md",
+                  image === img
+                    ? "ring-2 ring-primary ring-offset-2 scale-105 shadow-lg"
+                    : ""
                 )}
                 onClick={() => setImage(img)}
               />
@@ -106,13 +109,13 @@ export default function NewCollectionDialog() {
           </div>
         </div>
         <DialogFooter>
-          <Button
-            type="submit"
+          <SubmitButton
+            isLoading={isLoading}
             onClick={handleSubmit}
-            disabled={!name.trim() || isLoading}
+            disabled={!name.trim() || !image || isLoading}
           >
-            {isLoading ? "Creating..." : "Create"}
-          </Button>
+            Create
+          </SubmitButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

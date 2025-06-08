@@ -13,4 +13,11 @@ export const CHESS_TEXT_SYMBOLS = {
   BLACK_PAWN: "♟",
 };
 
-export const CHESS_IMAGES = ["shield.png", "book.png"];
+export const CHESS_IMAGES = [
+  "shield.png",
+  "book.png",
+  "bishop.png",
+  "queen.png",
+  "checkmate.png",
+  "endgame.png",
+];
