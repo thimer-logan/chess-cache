@@ -68,6 +68,7 @@ export async function getCollectionById(
 
 export async function createCollection(collection: {
   name: string;
+  image: string;
 }): Promise<Collection> {
   const supabase = await getSupabase();
 

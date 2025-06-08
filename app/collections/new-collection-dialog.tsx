@@ -15,9 +15,13 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createCollectionAction } from "./actions";
+import Image from "next/image";
+import { CHESS_IMAGES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export default function NewCollectionDialog() {
   const [name, setName] = useState("");
+  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -27,10 +31,16 @@ export default function NewCollectionDialog() {
       return;
     }
 
+    if (!image) {
+      toast.error("Please select an image");
+      return;
+    }
+
     setIsLoading(true);
 
     const result = await createCollectionAction({
       name: name.trim(),
+      image,
     });
 
     if (!result.ok) {
@@ -40,6 +50,7 @@ export default function NewCollectionDialog() {
 
     setOpen(false);
     setName("");
+    setImage("");
     toast.success("Collection created successfully");
     setIsLoading(false);
   };
@@ -74,6 +85,25 @@ export default function NewCollectionDialog() {
               }
             }}
           />
+          <Label htmlFor="image" className="text-right">
+            Image
+          </Label>
+          <div className="col-span-3 flex items-center gap-2">
+            {CHESS_IMAGES.map((img) => (
+              <Image
+                key={img}
+                src={`/images/${img}`}
+                alt={`${img}`}
+                width={50}
+                height={50}
+                className={cn(
+                  "cursor-pointer",
+                  image === img ? "border-2 border-primary" : ""
+                )}
+                onClick={() => setImage(img)}
+              />
+            ))}
+          </div>
         </div>
         <DialogFooter>
           <Button

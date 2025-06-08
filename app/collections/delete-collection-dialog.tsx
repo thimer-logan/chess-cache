@@ -39,7 +39,7 @@ export default function DeleteCollectionDialog() {
       return;
     }
     toast.success("Collection deleted successfully");
-    router.push("/");
+    router.push("/collections");
   };
 
   const handleCancel = () => {

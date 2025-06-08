@@ -41,7 +41,7 @@ export default function CollectionListItem({
       )}
     >
       <Image
-        src="/images/shield.png"
+        src={`/images/${collection.image || "shield.png"}`}
         alt="Chess"
         width={50}
         height={50}

@@ -23,6 +23,7 @@ export async function createSequenceAction(sequence: {
 
 export async function createCollectionAction(collection: {
   name: string;
+  image: string;
 }): Promise<ActionResult<Collection>> {
   try {
     const data = await createCollection(collection);
