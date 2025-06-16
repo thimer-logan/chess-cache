@@ -13,11 +13,13 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 interface VariationSelectProps {
+  collectionId: string;
   sequenceId: string;
   variations: Variation[];
 }
 
 export default function VariationSelect({
+  collectionId,
   sequenceId,
   variations,
 }: VariationSelectProps) {
@@ -29,7 +31,9 @@ export default function VariationSelect({
   );
 
   function handleChange(variationId: string) {
-    router.push(`/sequences/${sequenceId}/${variationId}`);
+    router.push(
+      `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
+    );
   }
 
   return (

@@ -24,7 +24,7 @@ export function NavHeader() {
   const pathname = usePathname();
 
   return (
-    <div className="flex w-full shrink-0 items-center px-4 sm:px-6">
+    <div className="flex w-full items-center gap-6 px-2 sm:px-4">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="sm:hidden">
@@ -56,14 +56,18 @@ export function NavHeader() {
           </div>
         </SheetContent>
       </Sheet>
-      <Link href="/" className="hidden sm:block">
+      <Link href="/" className="hidden sm:flex items-center gap-2">
         <Image src="/logo.png" alt="Chess" width={32} height={32} />
+        <h2 className="text-lg font-bold">ChessCache</h2>
       </Link>
-      <NavigationMenu className="hidden ml-auto sm:flex">
+      <NavigationMenu className="hidden sm:flex">
         <NavigationMenuList className="gap-2 *:data-[slot=navigation-menu-item]:h-7 **:data-[slot=navigation-menu-link]:py-1 **:data-[slot=navigation-menu-link]:font-medium">
           <NavigationMenuItem>
-            <NavigationMenuLink asChild data-active={pathname === "/"}>
-              <Link href="/">Home</Link>
+            <NavigationMenuLink
+              asChild
+              data-active={pathname === "/collections"}
+            >
+              <Link href="/collections">Home</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>

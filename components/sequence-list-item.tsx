@@ -20,7 +20,7 @@ export default function SequenceListItem({
     >
       <Link
         href={`/collections/${sequence.collection_id}/sequences/${sequence.id}`}
-        className="hover:no-underline"
+        className="hover:no-underline w-full"
       >
         <div className="flex flex-col gap-1 px-2 py-1">
           <span className="font-semibold text-xl">{sequence.name}</span>

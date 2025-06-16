@@ -1,7 +1,7 @@
 import { CollectionWithSequences } from "@/lib/types/database.types";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
-import NewCollectionDialog from "@/app/collections/new-collection-dialog";
+import NewCollectionDialog from "@/app/(app)/collections/new-collection-dialog";
 import CollectionsList from "./collections-list";
 interface CollectionsCardProps {
   collections: CollectionWithSequences[];

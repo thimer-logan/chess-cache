@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Chess App",
-  description: "A chess application for learning and practicing",
+  title: "ChessCache",
+  description: "A chess application for learning and practicing chess",
 };
 
 export default async function RootLayout({
