@@ -58,6 +58,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      friend_requests: {
+        Row: {
+          id: string;
+          receiver_id: string;
+          sender_id: string;
+          sent_at: string;
+          status: string;
+        };
+        Insert: {
+          id?: string;
+          receiver_id: string;
+          sender_id: string;
+          sent_at?: string;
+          status?: string;
+        };
+        Update: {
+          id?: string;
+          receiver_id?: string;
+          sender_id?: string;
+          sent_at?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      friendships: {
+        Row: {
+          since: string;
+          user_a: string;
+          user_b: string;
+        };
+        Insert: {
+          since?: string;
+          user_a: string;
+          user_b: string;
+        };
+        Update: {
+          since?: string;
+          user_a?: string;
+          user_b?: string;
+        };
+        Relationships: [];
+      };
       moves: {
         Row: {
           fen: string;
@@ -186,7 +228,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      accept_friend_request: {
+        Args: { p_request_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       Orientation: "white" | "black";
@@ -331,3 +376,9 @@ export type SequenceWithVariations = Sequence & {
 export type VariationWithMoves = Variation & {
   moves: Move[];
 };
+
+export type FriendRequestCore = Tables<"friend_requests">;
+export type FriendsCore = Tables<"friendships">;
+
+export type FriendRequest = FriendRequestCore &
+  Omit<Profile, "id" | "created_at">;
