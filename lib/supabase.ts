@@ -1,12 +1,16 @@
-import type { Database } from "@/lib/types/database.types";
-import { createClient as createServerClient } from "@/lib/server";
-import { createClient as createBrowserClient } from "@/lib/client";
-
 export async function getSupabase() {
-  // const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  // const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  console.log("typeof window", typeof window);
   if (typeof window === "undefined") {
-    return await createServerClient();
+    const { createClient } = await import(
+      /* webpackMode: "eager" */
+      "@/lib/server"
+    );
+    return await createClient();
   }
-  return createBrowserClient();
+
+  const { createClient } = await import(
+    /* webpackMode: "eager" */
+    "@/lib/client"
+  );
+  return createClient();
 }
