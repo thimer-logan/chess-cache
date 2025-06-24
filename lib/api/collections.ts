@@ -1,8 +1,10 @@
 import {
   Collection,
+  CollectionShare,
   CollectionWithSequences,
 } from "@/lib/types/database.types";
-import { getSupabase } from "../supabase";
+import { getSupabase } from "@/lib/supabase";
+import { notFound } from "next/navigation";
 
 export async function getCollections(): Promise<Collection[]> {
   const supabase = await getSupabase();
@@ -47,9 +49,7 @@ export async function getCollectionsWithSequences(): Promise<
   return data;
 }
 
-export async function getCollectionById(
-  id: string
-): Promise<Collection | null> {
+export async function getCollectionById(id: string): Promise<Collection> {
   const supabase = await getSupabase();
 
   const { data, error } = await supabase
@@ -58,9 +58,8 @@ export async function getCollectionById(
     .eq("id", id)
     .single();
 
-  if (error) {
-    console.error("Error fetching collection:", error);
-    throw new Error("Failed to fetch collection");
+  if (error || !data) {
+    notFound();
   }
 
   return data;
@@ -111,6 +110,28 @@ export async function updateCollection(collection: {
     .from("collections")
     .update(collection)
     .eq("id", collection.id)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function shareCollection(
+  collectionId: string,
+  userId: string
+): Promise<CollectionShare> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("collection_shares")
+    .insert({
+      collection_id: collectionId,
+      target_user_id: userId,
+    })
     .select()
     .single();
 

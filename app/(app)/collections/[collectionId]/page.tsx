@@ -8,6 +8,8 @@ import { Pencil, Share, Trash2 } from "lucide-react";
 import Image from "next/image";
 import EditCollectionDialog from "./edit-collection-dialog";
 import DeleteCollectionDialog from "./delete-collection-dialog";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 
 export default async function CollectionPage({
   params,
@@ -19,7 +21,7 @@ export default async function CollectionPage({
   const sequences = await getSequencesByCollectionId(collectionId);
 
   if (!collection) {
-    return <div>Collection not found</div>;
+    notFound();
   }
 
   return (
@@ -34,9 +36,15 @@ export default async function CollectionPage({
         <CardTitle className="text-2xl font-bold">{collection.name}</CardTitle>
         <IfOwner>
           <div className="inline-flex items-center gap-2 ml-auto">
-            <Button>
-              <Share />
-              Share
+            <Button asChild>
+              <Link
+                href={`/collections/${collectionId}/share`}
+                prefetch={false}
+                scroll={false}
+              >
+                <Share />
+                Share
+              </Link>
             </Button>
             <EditCollectionDialog collection={collection}>
               <Button variant="outline" size="icon">

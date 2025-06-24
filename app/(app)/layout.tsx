@@ -5,8 +5,10 @@ import { getUserProfile } from "@/lib/api/user";
 
 export default async function AppLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const supabase = await createClient();
 
@@ -35,6 +37,7 @@ export default async function AppLayout({
       <main className="mx-auto my-0 p-6 max-w-screen-lg">
         <div className="flex flex-1">{children}</div>
       </main>
+      {modal}
     </>
   );
 }
