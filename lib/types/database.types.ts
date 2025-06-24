@@ -34,6 +34,36 @@ export type Database = {
   };
   public: {
     Tables: {
+      collection_shares: {
+        Row: {
+          collection_id: number;
+          target_user_id: string;
+        };
+        Insert: {
+          collection_id: number;
+          target_user_id: string;
+        };
+        Update: {
+          collection_id?: number;
+          target_user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collection_shares_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collection_shares_target_user_id_fkey";
+            columns: ["target_user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       collections: {
         Row: {
           created_at: string;
@@ -135,18 +165,21 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string;
+          display_name: string;
           first_name: string;
           id: string;
           last_name: string;
         };
         Insert: {
           created_at?: string;
+          display_name?: string;
           first_name?: string;
           id: string;
           last_name?: string;
         };
         Update: {
           created_at?: string;
+          display_name?: string;
           first_name?: string;
           id?: string;
           last_name?: string;
@@ -231,6 +264,31 @@ export type Database = {
       accept_friend_request: {
         Args: { p_request_id: string };
         Returns: undefined;
+      };
+      decline_friend_request: {
+        Args: { p_request_id: string };
+        Returns: undefined;
+      };
+      get_my_friends: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          created_at: string;
+        }[];
+      };
+      get_pending_friend_requests: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          sender_id: string;
+          receiver_id: string;
+          first_name: string;
+          last_name: string;
+          sent_at: string;
+          status: string;
+        }[];
       };
     };
     Enums: {
@@ -364,6 +422,7 @@ export type Sequence = Tables<"sequences">;
 export type Variation = Tables<"variations">;
 export type Move = Tables<"moves">;
 export type Orientation = Enums<"Orientation">;
+export type CollectionShare = Tables<"collection_shares">;
 
 export type CollectionWithSequences = Collection & {
   sequences: Sequence[];
