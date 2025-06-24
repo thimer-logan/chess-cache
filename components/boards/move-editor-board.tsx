@@ -63,7 +63,7 @@ const MoveEditorBoard = forwardRef<MoveEditorBoardRef, MoveEditorBoardProps>(
     function getMoveOptions(square: Square) {
       const moves = game.getMoveOptions(square);
       if (!moves) return null;
-      const newSquares: Squares = {};
+      const newSquares = {} as Squares;
       moves.map((move) => {
         newSquares[move.to] = {
           background:
