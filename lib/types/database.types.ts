@@ -114,50 +114,76 @@ export type Database = {
       };
       friendships: {
         Row: {
-          since: string;
+          since: string | null;
           user_a: string;
           user_b: string;
         };
         Insert: {
-          since?: string;
+          since?: string | null;
           user_a: string;
           user_b: string;
         };
         Update: {
-          since?: string;
+          since?: string | null;
           user_a?: string;
           user_b?: string;
         };
         Relationships: [];
       };
-      moves: {
+      lines: {
         Row: {
-          fen: string;
           id: number;
-          ply: number;
-          san: string;
+          name: string;
           variation_id: number;
         };
         Insert: {
-          fen: string;
           id?: number;
-          ply: number;
-          san: string;
-          variation_id: number;
+          name: string;
+          variation_id?: number;
         };
         Update: {
-          fen?: string;
           id?: number;
-          ply?: number;
-          san?: string;
+          name?: string;
           variation_id?: number;
         };
         Relationships: [
           {
-            foreignKeyName: "moves_variation_id_fkey";
+            foreignKeyName: "lines_variation_id_fkey";
             columns: ["variation_id"];
             isOneToOne: false;
             referencedRelation: "variations";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      moves: {
+        Row: {
+          fen: string;
+          id: number;
+          line_id: number;
+          ply: number;
+          san: string;
+        };
+        Insert: {
+          fen: string;
+          id?: number;
+          line_id: number;
+          ply: number;
+          san: string;
+        };
+        Update: {
+          fen?: string;
+          id?: number;
+          line_id?: number;
+          ply?: number;
+          san?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "moves_line_id_fkey";
+            columns: ["line_id"];
+            isOneToOne: false;
+            referencedRelation: "lines";
             referencedColumns: ["id"];
           }
         ];
@@ -220,35 +246,29 @@ export type Database = {
       };
       variations: {
         Row: {
-          created_at: string;
           id: number;
           name: string;
           orientation: Database["public"]["Enums"]["Orientation"];
           sequence_id: number;
-          start_fen: string | null;
-          updated_at: string;
+          start_fen: string;
         };
         Insert: {
-          created_at?: string;
           id?: number;
-          name: string;
+          name?: string;
           orientation?: Database["public"]["Enums"]["Orientation"];
           sequence_id: number;
-          start_fen?: string | null;
-          updated_at?: string;
+          start_fen?: string;
         };
         Update: {
-          created_at?: string;
           id?: number;
           name?: string;
           orientation?: Database["public"]["Enums"]["Orientation"];
           sequence_id?: number;
-          start_fen?: string | null;
-          updated_at?: string;
+          start_fen?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "variations_sequence_id_fkey";
+            foreignKeyName: "variations_sequence_id_fkey1";
             columns: ["sequence_id"];
             isOneToOne: false;
             referencedRelation: "sequences";
@@ -275,6 +295,7 @@ export type Database = {
           id: string;
           first_name: string;
           last_name: string;
+          display_name: string;
           created_at: string;
         }[];
       };
@@ -286,9 +307,27 @@ export type Database = {
           receiver_id: string;
           first_name: string;
           last_name: string;
+          display_name: string;
           sent_at: string;
           status: string;
         }[];
+      };
+      get_pending_sent_friend_requests: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          sender_id: string;
+          receiver_id: string;
+          first_name: string;
+          last_name: string;
+          display_name: string;
+          sent_at: string;
+          status: string;
+        }[];
+      };
+      remove_friend: {
+        Args: { p_friend_id: string };
+        Returns: undefined;
       };
     };
     Enums: {
@@ -420,6 +459,7 @@ export type Profile = Tables<"profiles">;
 export type Collection = Tables<"collections">;
 export type Sequence = Tables<"sequences">;
 export type Variation = Tables<"variations">;
+export type Line = Tables<"lines">;
 export type Move = Tables<"moves">;
 export type Orientation = Enums<"Orientation">;
 export type CollectionShare = Tables<"collection_shares">;
@@ -432,7 +472,11 @@ export type SequenceWithVariations = Sequence & {
   variations: Variation[];
 };
 
-export type VariationWithMoves = Variation & {
+export type VariationWithLines = Variation & {
+  lines: LineWithMoves[];
+};
+
+export type LineWithMoves = Line & {
   moves: Move[];
 };
 

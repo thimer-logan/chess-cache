@@ -4,10 +4,10 @@ import {
   Move,
   Orientation,
   Variation,
-  VariationWithMoves,
+  VariationWithLines,
 } from "@/lib/types/database.types";
 import { getSupabase } from "../supabase";
-import { MoveWithVariation } from "../types/utils";
+import { MoveWithLine } from "../types/utils";
 
 export async function getVariations(sequenceId: string): Promise<Variation[]> {
   const supabase = await getSupabase();
@@ -56,15 +56,33 @@ export async function getVariationMoves(variationId: string): Promise<Move[]> {
   return data;
 }
 
-export async function getVariationsWithMoves(
+export async function getVariationsWithLines(
   sequenceId: string
-): Promise<VariationWithMoves[]> {
+): Promise<VariationWithLines[]> {
   const supabase = await getSupabase();
 
   const { data, error } = await supabase
     .from("variations")
-    .select("*, moves(*)")
+    .select("*, lines(*, moves(*))")
     .eq("sequence_id", sequenceId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function getVariationWithLines(
+  variationId: string
+): Promise<VariationWithLines> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("variations")
+    .select("*, lines(*, moves(*))")
+    .eq("id", variationId)
+    .single();
 
   if (error) {
     throw new Error(error.message);
@@ -148,7 +166,7 @@ export async function saveVariationStartFen(
 
 export async function saveVariationMoves(
   variationId: number,
-  moves: MoveWithVariation[]
+  moves: MoveWithLine[]
 ): Promise<Move[]> {
   // TODO: Need to transform this into a single atomic operation.
   const supabase = await getSupabase();
