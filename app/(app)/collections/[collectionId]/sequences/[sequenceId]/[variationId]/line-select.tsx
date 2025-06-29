@@ -37,7 +37,10 @@ export default function LineSelect({ lines }: LineSelectProps) {
   }
 
   return (
-    <Select onValueChange={handleChange} value={lineId as string}>
+    <Select
+      onValueChange={handleChange}
+      value={lineId ? (lineId as string) : "all"}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Select a line" />
       </SelectTrigger>
