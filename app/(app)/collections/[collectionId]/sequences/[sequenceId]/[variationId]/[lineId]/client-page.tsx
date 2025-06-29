@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { LineWithMoves, Variation } from "@/lib/types/database.types";
 import { useRef, useState } from "react";
 import { ChessMove, MoveWithLine } from "@/lib/types/utils";
-import { saveLineMovesAction } from "./actions";
+import { deleteLineAction, saveLineMovesAction } from "./actions";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
@@ -60,6 +60,26 @@ export default function ClientPage({ variation, line }: ClientPageProps) {
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this line?")) {
+      const result = await deleteLineAction(
+        line.id,
+        variation.id,
+        variation.sequence_id,
+        collectionId as string
+      );
+      if (result.ok) {
+        toast.success("Line deleted successfully");
+      } else {
+        toast.error(result.error);
+      }
+    }
+  };
+
   if (isEditing) {
     return (
       <div className="flex flex-col gap-4">
@@ -85,10 +105,14 @@ export default function ClientPage({ variation, line }: ClientPageProps) {
       <div className="flex justify-center">
         <IfOwner>
           <div className="flex gap-2">
-            <Button onClick={() => setIsEditing(true)} disabled={!canEdit}>
+            <Button onClick={handleEdit} disabled={!canEdit}>
               <Pencil /> Edit
             </Button>
-            <Button variant="destructive" disabled={!canEdit}>
+            <Button
+              variant="destructive"
+              disabled={!canEdit}
+              onClick={handleDelete}
+            >
               <Trash /> Delete
             </Button>
           </div>

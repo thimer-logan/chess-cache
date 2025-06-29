@@ -55,3 +55,15 @@ export async function createLine(
 
   return data;
 }
+
+export async function deleteLine(lineId: string): Promise<boolean> {
+  const supabase = await getSupabase();
+
+  const { error } = await supabase.from("lines").delete().eq("id", lineId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return true;
+}

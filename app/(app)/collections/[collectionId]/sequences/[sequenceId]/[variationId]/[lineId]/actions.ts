@@ -3,6 +3,9 @@
 import { createClient } from "@/lib/server";
 import { revalidatePath } from "next/cache";
 import { MoveWithLine } from "@/lib/types/utils";
+import { redirect } from "next/navigation";
+import { deleteLine } from "@/lib/api/lines";
+import { ActionResult } from "@/lib/types/utils";
 
 export async function saveLineMovesAction(
   lineId: number,
@@ -44,4 +47,25 @@ export async function saveLineMovesAction(
     `/collections/${collectionId}/sequences/${sequenceId}/${variationId}/${lineId}`
   );
   return data;
+}
+
+export async function deleteLineAction(
+  lineId: number,
+  variationId: number,
+  sequenceId: number,
+  collectionId: string
+): Promise<ActionResult<void>> {
+  try {
+    await deleteLine(lineId.toString());
+  } catch (error) {
+    console.error("Error deleting line:", error);
+    return { ok: false, error: "Failed to delete line" };
+  }
+
+  revalidatePath(
+    `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
+  );
+  redirect(
+    `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
+  );
 }
