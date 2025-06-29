@@ -28,7 +28,7 @@ export default function CreateLineDialog({ children }: CreateLineDialogProps) {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      toast.error("Please enter a collection name");
+      toast.error("Please enter a line name");
       return;
     }
 
@@ -47,7 +47,7 @@ export default function CreateLineDialog({ children }: CreateLineDialogProps) {
     }
 
     setOpen(false);
-    toast.success("Collection updated successfully");
+    toast.success("Line created successfully");
     setIsLoading(false);
   };
 
