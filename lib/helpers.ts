@@ -1,6 +1,6 @@
 import { Piece as ChessJsPiece, Color, PieceSymbol } from "chess.js";
 import { Piece as ReactChessboardPiece } from "react-chessboard/dist/chessboard/types";
-import { VariationWithMoves } from "./types/database.types";
+import { VariationWithLines } from "./types/database.types";
 import {
   FEN,
   MoveGraphNavigator,
@@ -22,38 +22,37 @@ export function getPieceFromReactChessboard(
   };
 }
 
-export function buildMoveGraph(variations: VariationWithMoves[]): MoveGraph {
+export function buildMoveGraph(variations: VariationWithLines[]): MoveGraph {
   const graph: MoveGraph = Object.create(null); // clean dict, no proto keys
 
   for (const v of variations) {
-    // Sort moves by ply once; guarantees sequential order
-    const ordered = [...v.moves].sort((a, b) => a.ply - b.ply);
+    for (const line of v.lines) {
+      // Sort moves by ply once; guarantees sequential order
+      const ordered = [...line.moves].sort((a, b) => a.ply - b.ply);
 
-    ordered.forEach((m, idx) => {
-      const next = ordered[idx + 1] ?? null;
-      const edge: MoveEdge = {
-        current: m,
-        next,
-      };
+      ordered.forEach((m, idx) => {
+        const next = ordered[idx + 1] ?? null;
+        const edge: MoveEdge = {
+          current: m,
+          next,
+        };
 
-      (graph[m.fen] ??= []).push(edge); // push into array (create if miss)
-    });
+        (graph[m.fen] ??= []).push(edge); // push into array (create if miss)
+      });
 
-    /* Optional: connect the declared start_fen to the first move.
-       This lets the trainer begin from a custom starting position even if
-       it's _not_ equal to moves[0].fen. Comment it out if not needed. */
-    if (v.start_fen && ordered.length) {
-      const first = ordered[0];
-      const virtualEdge: MoveEdge = {
-        current: {
-          fen: v.start_fen,
-          ply: 0,
-          san: "(start)",
-          variation_id: v.id,
-        },
-        next: first,
-      };
-      (graph[v.start_fen] ??= []).push(virtualEdge);
+      if (v.start_fen && ordered.length) {
+        const first = ordered[0];
+        const virtualEdge: MoveEdge = {
+          current: {
+            fen: v.start_fen,
+            ply: 0,
+            san: "(start)",
+            line_id: line.id,
+          },
+          next: first,
+        };
+        (graph[v.start_fen] ??= []).push(virtualEdge);
+      }
     }
   }
 

@@ -1,8 +1,7 @@
 import { getSequenceWithVariations } from "@/lib/api/sequences";
-import VariationSelect from "./variation-select";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Share } from "lucide-react";
+import { Share } from "lucide-react";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
@@ -52,19 +51,11 @@ export default async function SequenceLayout({
         </CardHeader>
       </Card>
       <div className="flex flex-col gap-6 w-full px-4">
-        <h2 className="text-2xl font-bold">{sequence.name}</h2>
         <div className="flex justify-between items-center">
-          <VariationSelect
-            collectionId={collectionId}
-            sequenceId={sequenceId}
-            variations={sequence.variations}
-          />
-          <Button asChild>
-            <Link
-              href={`/collections/${collectionId}/sequences/${sequenceId}/new`}
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              New Variation
+          <h2 className="text-2xl font-bold">{sequence.name}</h2>
+          <Button asChild variant="link">
+            <Link href={`/collections/${collectionId}/sequences/${sequenceId}`}>
+              All Variations
             </Link>
           </Button>
         </div>

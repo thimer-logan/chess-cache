@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Orientation, VariationWithMoves } from "@/lib/types/database.types";
+import { Orientation, VariationWithLines } from "@/lib/types/database.types";
 import { ChevronLeft, ChevronRight, FlipVertical2 } from "lucide-react";
 import { Chess } from "chess.js";
 import { MoveChoice } from "@/lib/types/utils";
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
 
 interface ExploreVariationsBoardProps {
-  variations: VariationWithMoves[];
+  variations: VariationWithLines[];
 }
 
 export default function ExploreVariationsBoard({

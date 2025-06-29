@@ -3,7 +3,7 @@ import { Move } from "./database.types";
 export type WithOptional<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
 
-export type MoveWithVariation = WithOptional<Move, "id">;
+export type MoveWithLine = WithOptional<Move, "id">;
 
 export type ChessMove = Omit<Move, "id" | "variation_id">;
 
@@ -12,8 +12,8 @@ export type FEN = string;
 export type UUID = string | number;
 
 export interface MoveEdge {
-  current: MoveWithVariation;
-  next: MoveWithVariation | null;
+  current: MoveWithLine;
+  next: MoveWithLine | null;
 }
 
 export interface MoveChoice {

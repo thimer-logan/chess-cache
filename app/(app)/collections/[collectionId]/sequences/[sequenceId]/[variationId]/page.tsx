@@ -1,5 +1,5 @@
-import { getVariation, getVariationMoves } from "@/lib/api/variations";
-import ClientPage from "./client-page";
+import { getVariationWithLines } from "@/lib/api/variations";
+import ExploreVariationsBoard from "@/components/boards/explore-variations-board";
 
 export default async function VariationPage({
   params,
@@ -7,8 +7,7 @@ export default async function VariationPage({
   params: Promise<{ sequenceId: string; variationId: string }>;
 }) {
   const { variationId } = await params;
-  const variation = await getVariation(variationId);
-  const moves = await getVariationMoves(variationId);
+  const variation = await getVariationWithLines(variationId);
 
-  return <ClientPage moves={moves} variation={variation} />;
+  return <ExploreVariationsBoard variations={[variation]} />;
 }

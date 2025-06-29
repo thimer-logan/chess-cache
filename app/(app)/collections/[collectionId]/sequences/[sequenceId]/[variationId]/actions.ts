@@ -1,81 +1,41 @@
 "use server";
 
-import {
-  deleteVariationMoves,
-  saveVariationStartFen,
-} from "@/lib/api/variations";
-import { createClient } from "@/lib/server";
-import { Variation } from "@/lib/types/database.types";
-import { ActionResult, MoveWithVariation } from "@/lib/types/utils";
+import { createLine } from "@/lib/api/lines";
+import { deleteVariation } from "@/lib/api/variations";
+import { Line, Variation } from "@/lib/types/database.types";
+import { ActionResult } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
 
-export async function saveVariationMovesAction(
-  variationId: number,
-  sequenceId: number,
+export async function createLineAction(
+  name: string,
+  variationId: string,
   collectionId: string,
-  moves: MoveWithVariation[]
-) {
-  const supabase = await createClient();
-
-  const { error: deleteError } = await supabase
-    .from("moves")
-    .delete()
-    .eq("variation_id", variationId);
-
-  if (deleteError) {
-    console.error("Error deleting variation moves:", deleteError);
-    throw new Error("Failed to delete variation moves");
+  sequenceId: string
+): Promise<ActionResult<Line>> {
+  try {
+    const data = await createLine(variationId, name);
+    revalidatePath(
+      `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
+    );
+    return { ok: true, data };
+  } catch (error) {
+    console.error("Error creating line:", error);
+    return { ok: false, error: "Failed to create line" };
   }
-
-  // Physically remove id field from each move
-  const cleanedMoves = moves.map((move) => ({
-    fen: move.fen,
-    ply: move.ply,
-    san: move.san,
-    variation_id: move.variation_id,
-  }));
-  const { data, error } = await supabase
-    .from("moves")
-    .upsert(cleanedMoves)
-    .select();
-
-  if (error) {
-    console.error("Error saving variation:", error);
-    throw new Error("Failed to save variation");
-  }
-
-  revalidatePath(
-    `/collections/${collectionId}/sequences/${sequenceId}/${variationId}`
-  );
-  return data;
 }
 
-export async function deleteVariationMovesAction(
+export async function deleteVariationAction(
   variation: Variation,
   collectionId: string
 ): Promise<ActionResult<void>> {
   try {
-    await deleteVariationMoves(variation.id);
-
+    await deleteVariation(variation.id);
     revalidatePath(
-      `/collections/${collectionId}/sequences/${variation.sequence_id}/${variation.id}`
+      `/collections/${collectionId}/sequences/${variation.sequence_id}`
     );
     return { ok: true };
   } catch (error) {
-    console.error("Error deleting variation moves:", error);
-    return { ok: false, error: "Failed to delete variation moves" };
-  }
-}
-
-export async function saveVariationStartFenAction(
-  variationId: number,
-  fen: string
-): Promise<ActionResult<Variation>> {
-  try {
-    const data = await saveVariationStartFen(variationId, fen);
-    return { ok: true, data };
-  } catch (error) {
-    console.error("Error saving variation start fen:", error);
-    return { ok: false, error: "Failed to save variation start fen" };
+    console.error("Error deleting variation:", error);
+    return { ok: false, error: "Failed to delete variation" };
   }
 }
