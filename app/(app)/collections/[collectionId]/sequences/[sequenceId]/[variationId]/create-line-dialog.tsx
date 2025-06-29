@@ -67,7 +67,7 @@ export default function CreateLineDialog({ children }: CreateLineDialogProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="col-span-3"
-            placeholder="Enter collection name"
+            placeholder="Enter line name"
             disabled={isLoading}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !isLoading) {

@@ -26,13 +26,15 @@ export default async function Layout({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h4 className="text-lg font-semibold">{variation.name}</h4>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-2">
+        <h4 className="text-lg font-semibold text-center sm:text-left">
+          {variation.name}
+        </h4>
+        <div className="flex flex-row justify-between items-center gap-2">
           {variation.lines.length > 0 && <LineSelect lines={variation.lines} />}
           <IfOwner>
             <CreateLineDialog>
-              <Button>
+              <Button className="">
                 <Plus className="h-4 w-4 mr-1" />
                 New Line
               </Button>

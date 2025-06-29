@@ -102,7 +102,7 @@ const ManualBoard = forwardRef<ManualBoardRef, ManualBoardProps>(
         setFenPosition(game.fen());
       }
     };
-    console.log(boardWidth);
+
     return (
       <div className={cn("my-0 mx-auto w-full", className)}>
         <ChessboardDnDProvider>
@@ -153,7 +153,7 @@ const ManualBoard = forwardRef<ManualBoardRef, ManualBoardProps>(
               ))}
             </div>
           </div>
-          <div className="flex justify-center gap-2 my-2">
+          <div className="flex justify-center flex-wrap gap-2 my-2">
             <Button
               variant="outline"
               onClick={() => {

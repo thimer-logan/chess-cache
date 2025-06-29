@@ -26,7 +26,7 @@ export default async function CollectionPage({
 
   return (
     <Card className="flex-1">
-      <CardHeader className="flex items-center gap-2">
+      <CardHeader className="flex items-center gap-2 flex-wrap">
         <Image
           src={`/images/${collection.image || "shield.png"}`}
           alt="Chess"
