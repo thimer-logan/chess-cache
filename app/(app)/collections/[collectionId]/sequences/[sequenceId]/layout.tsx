@@ -33,7 +33,15 @@ export default async function SequenceLayout({
             width={50}
             height={50}
           />
-          <CardTitle className="text-xl font-bold">{collection.name}</CardTitle>
+          <Link
+            href={`/collections/${collectionId}`}
+            prefetch={false}
+            scroll={false}
+          >
+            <CardTitle className="text-xl font-bold">
+              {collection.name}
+            </CardTitle>
+          </Link>
           <IfOwner>
             <div className="inline-flex items-center gap-2 ml-auto">
               <Button asChild>
