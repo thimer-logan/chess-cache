@@ -1,21 +1,22 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Variation } from "@/lib/types/database.types";
+import { VariationWithLines } from "@/lib/types/database.types";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 interface VariationSelectProps {
   collectionId: string;
   sequenceId: string;
-  variations: Variation[];
+  variations: VariationWithLines[];
 }
 
 export default function VariationSelect({
@@ -43,10 +44,15 @@ export default function VariationSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="explore">Explore all</SelectItem>
-        <Separator className="my-2" />
+        <SelectSeparator />
         {sortedVariations.map((variation) => (
           <SelectItem key={variation.id} value={variation.id.toString()}>
-            {variation.name}
+            <div className="flex flex-col gap-1">
+              {variation.name}
+              <Badge variant="secondary">
+                {variation.lines?.length ?? 0} lines
+              </Badge>
+            </div>
           </SelectItem>
         ))}
       </SelectContent>

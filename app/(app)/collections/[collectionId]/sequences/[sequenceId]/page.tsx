@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import VariationSelect from "./variation-select";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { getSequenceWithVariations } from "@/lib/api/sequences";
+import { getVariationsWithLines } from "@/lib/api/variations";
 
 export default async function Page({
   params,
@@ -10,7 +10,7 @@ export default async function Page({
   params: Promise<{ collectionId: string; sequenceId: string }>;
 }) {
   const { collectionId, sequenceId } = await params;
-  const sequence = await getSequenceWithVariations(sequenceId);
+  const variations = await getVariationsWithLines(sequenceId);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -18,7 +18,7 @@ export default async function Page({
         <VariationSelect
           collectionId={collectionId}
           sequenceId={sequenceId}
-          variations={sequence.variations}
+          variations={variations}
         />
         <Button asChild>
           <Link
