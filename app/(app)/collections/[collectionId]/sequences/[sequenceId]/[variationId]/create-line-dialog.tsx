@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 import SubmitButton from "@/components/submit-button";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createLineAction } from "./actions";
 
 interface CreateLineDialogProps {
@@ -25,6 +25,7 @@ export default function CreateLineDialog({ children }: CreateLineDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const { collectionId, sequenceId, variationId } = useParams();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -41,14 +42,22 @@ export default function CreateLineDialog({ children }: CreateLineDialogProps) {
       sequenceId as string
     );
 
-    if (!result.ok) {
+    setIsLoading(false);
+
+    if (!result?.ok) {
       toast.error(result.error);
       return;
     }
 
     setOpen(false);
     toast.success("Line created successfully");
-    setIsLoading(false);
+    setName("");
+
+    if (result.data?.id) {
+      router.push(
+        `/collections/${collectionId}/sequences/${sequenceId}/${variationId}/${result.data.id}`
+      );
+    }
   };
 
   return (
