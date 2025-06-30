@@ -1,4 +1,4 @@
-import { getVariationsWithLines } from "@/lib/api/variations";
+import { getVariationsWithFullLines } from "@/lib/api/variations";
 import ExploreVariationsBoard from "@/components/boards/explore-variations-board";
 export default async function ExplorePage({
   params,
@@ -6,7 +6,7 @@ export default async function ExplorePage({
   params: Promise<{ sequenceId: string }>;
 }) {
   const { sequenceId } = await params;
-  const variations = await getVariationsWithLines(sequenceId);
+  const variations = await getVariationsWithFullLines(sequenceId);
 
   return (
     <div className="flex flex-col gap-4">

@@ -57,6 +57,23 @@ export async function getVariationMoves(variationId: string): Promise<Move[]> {
   return data;
 }
 
+export async function getVariationsWithFullLines(
+  sequenceId: string
+): Promise<VariationWithFullLines[]> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("variations")
+    .select("*, lines(*, moves(*))")
+    .eq("sequence_id", sequenceId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 export async function getVariationsWithLines(
   sequenceId: string
 ): Promise<VariationWithLines[]> {
