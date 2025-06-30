@@ -1,6 +1,6 @@
 import { Piece as ChessJsPiece, Color, PieceSymbol } from "chess.js";
 import { Piece as ReactChessboardPiece } from "react-chessboard/dist/chessboard/types";
-import { VariationWithLines } from "./types/database.types";
+import { VariationWithFullLines } from "./types/database.types";
 import {
   FEN,
   MoveGraphNavigator,
@@ -22,7 +22,9 @@ export function getPieceFromReactChessboard(
   };
 }
 
-export function buildMoveGraph(variations: VariationWithLines[]): MoveGraph {
+export function buildMoveGraph(
+  variations: VariationWithFullLines[]
+): MoveGraph {
   const graph: MoveGraph = Object.create(null); // clean dict, no proto keys
 
   for (const v of variations) {

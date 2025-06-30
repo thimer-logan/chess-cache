@@ -473,6 +473,10 @@ export type SequenceWithVariations = Sequence & {
 };
 
 export type VariationWithLines = Variation & {
+  lines: Line[];
+};
+
+export type VariationWithFullLines = Variation & {
   lines: LineWithMoves[];
 };
 

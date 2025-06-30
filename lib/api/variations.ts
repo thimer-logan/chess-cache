@@ -4,6 +4,7 @@ import {
   Move,
   Orientation,
   Variation,
+  VariationWithFullLines,
   VariationWithLines,
 } from "@/lib/types/database.types";
 import { getSupabase } from "../supabase";
@@ -63,7 +64,7 @@ export async function getVariationsWithLines(
 
   const { data, error } = await supabase
     .from("variations")
-    .select("*, lines(*, moves(*))")
+    .select("*, lines(*)")
     .eq("sequence_id", sequenceId);
 
   if (error) {
@@ -75,7 +76,7 @@ export async function getVariationsWithLines(
 
 export async function getVariationWithLines(
   variationId: string
-): Promise<VariationWithLines> {
+): Promise<VariationWithFullLines> {
   const supabase = await getSupabase();
 
   const { data, error } = await supabase
