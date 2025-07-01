@@ -52,8 +52,8 @@ export default function ClientPage({ variation, line }: ClientPageProps) {
         );
         setIsEditing(false);
       } catch (error) {
-        console.error("Error saving variation moves:", error);
-        toast.error("Failed to save variation moves");
+        console.error("Error saving moves:", error);
+        toast.error("Failed to save moves for this line");
       } finally {
         setIsLoading(false);
       }
