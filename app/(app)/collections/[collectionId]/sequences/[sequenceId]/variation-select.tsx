@@ -11,12 +11,34 @@ import {
 } from "@/components/ui/select";
 import { VariationWithLines } from "@/lib/types/database.types";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 
 interface VariationSelectProps {
   collectionId: string;
   sequenceId: string;
   variations: VariationWithLines[];
+}
+
+function VariationDisplay({ variation }: { variation: VariationWithLines }) {
+  const [isSelectValue, setIsSelectValue] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // This is a hack to check if the variation is being displayed in the select value
+    if (ref.current) {
+      const parent = ref.current.parentElement;
+      setIsSelectValue(parent?.getAttribute("data-slot") === "select-value");
+    }
+  }, []);
+
+  return (
+    <div ref={ref} className="flex flex-col gap-1">
+      {variation.name}
+      {!isSelectValue && (
+        <Badge variant="secondary">{variation.lines?.length ?? 0} lines</Badge>
+      )}
+    </div>
+  );
 }
 
 export default function VariationSelect({
@@ -47,12 +69,7 @@ export default function VariationSelect({
         <SelectSeparator />
         {sortedVariations.map((variation) => (
           <SelectItem key={variation.id} value={variation.id.toString()}>
-            <div className="flex flex-col gap-1">
-              {variation.name}
-              <Badge variant="secondary">
-                {variation.lines?.length ?? 0} lines
-              </Badge>
-            </div>
+            <VariationDisplay variation={variation} />
           </SelectItem>
         ))}
       </SelectContent>
