@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import CreateLineDialog from "./create-line-dialog";
 import LineSelect from "./line-select";
 import { getVariationWithLines } from "@/lib/api/variations";
 import { notFound } from "next/navigation";
 import { IfOwner } from "@/lib/contexts/collection-acl";
+import Link from "next/link";
 
 export default async function Layout({
   children,
@@ -17,7 +17,7 @@ export default async function Layout({
     variationId: string;
   }>;
 }) {
-  const { variationId } = await params;
+  const { collectionId, sequenceId, variationId } = await params;
   const variation = await getVariationWithLines(variationId);
 
   if (!variation) {
@@ -33,12 +33,16 @@ export default async function Layout({
         <div className="flex flex-row justify-between items-center gap-2">
           {variation.lines.length > 0 && <LineSelect lines={variation.lines} />}
           <IfOwner>
-            <CreateLineDialog>
-              <Button className="">
+            <Button asChild>
+              <Link
+                href={`/collections/${collectionId}/sequences/${sequenceId}/${variationId}/newline`}
+                prefetch={false}
+                scroll={false}
+              >
                 <Plus className="h-4 w-4 mr-1" />
                 New Line
-              </Button>
-            </CreateLineDialog>
+              </Link>
+            </Button>
           </IfOwner>
         </div>
       </div>
