@@ -32,8 +32,9 @@ export default function ExploreVariationsBoard({
     [moveGraph, startFen]
   );
   const [game, setGame] = useState(new Chess(nav.fen));
-  const [boardOrientation, setBoardOrientation] =
-    useState<Orientation>("white");
+  const [boardOrientation, setBoardOrientation] = useState<Orientation>(
+    variations[0]?.orientation ?? "white"
+  );
 
   const choices = groupNextMoveEdges(nav.outgoing());
 
