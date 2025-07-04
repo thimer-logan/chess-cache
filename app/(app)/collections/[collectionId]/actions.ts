@@ -1,7 +1,8 @@
 "use server";
 
 import { deleteCollection, updateCollection } from "@/lib/api/collections";
-import { Collection } from "@/lib/types/database.types";
+import { createSequence } from "@/lib/api/sequences";
+import { Collection, Sequence } from "@/lib/types/database.types";
 import { ActionResult } from "@/lib/types/utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -33,4 +34,28 @@ export async function deleteCollectionAction(
 
   revalidatePath("/collections");
   redirect("/collections");
+}
+
+export async function createSequenceAction(
+  collectionId: string,
+  name: string
+): Promise<ActionResult<Sequence>> {
+  let data: Sequence | null = null;
+
+  try {
+    data = await createSequence({
+      name,
+      collection_id: parseInt(collectionId),
+    });
+    revalidatePath(`/collections/${collectionId}`);
+  } catch (error) {
+    console.error("Error creating sequence:", error);
+    return { ok: false, error: "Failed to create sequence" };
+  }
+
+  if (data) {
+    redirect(`/collections/${collectionId}/sequences/${data.id}`);
+  }
+
+  return { ok: false, error: "Failed to create sequence" };
 }

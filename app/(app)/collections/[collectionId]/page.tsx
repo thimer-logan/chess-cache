@@ -4,12 +4,13 @@ import { getCollectionById } from "@/lib/api/collections";
 import { getSequencesByCollectionId } from "@/lib/api/sequences";
 import { IfOwner } from "@/lib/contexts/collection-acl";
 import SequencesList from "@/components/sequences-list";
-import { Pencil, Share, Trash2 } from "lucide-react";
+import { Pencil, Plus, Share, Trash2 } from "lucide-react";
 import Image from "next/image";
 import EditCollectionDialog from "./edit-collection-dialog";
 import DeleteCollectionDialog from "./delete-collection-dialog";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import NewSequenceDialog from "./new-sequence-dialog";
 
 export default async function CollectionPage({
   params,
@@ -64,6 +65,17 @@ export default async function CollectionPage({
         </IfOwner>
       </CardHeader>
       <CardContent>
+        <IfOwner>
+          <NewSequenceDialog />
+          <div className="flex justify-end items-center">
+            <Button variant="outline" asChild>
+              <Link href={`/collections/${collectionId}?new=true`}>
+                <Plus className="w-4 h-4" />
+                New Sequence
+              </Link>
+            </Button>
+          </div>
+        </IfOwner>
         <SequencesList sequences={sequences} />
       </CardContent>
     </Card>
